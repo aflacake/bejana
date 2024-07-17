@@ -1,7 +1,8 @@
-//bejana Nabi Ilyas
+//contoh bejana Nabi Ilyas
 <?php
 $wadah = bejana
-$air = air
-  echo"$wadah ada $air"
-  echo"'$wadah ada $air'"
+$sesuatu = air
+  echo'$wadah'
+  echo"$wadah didalamnya ada $sesuatu</br>"
+  echo"'$wadah didalamnya ada $sesuatu'"
 php>
