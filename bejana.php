@@ -3,5 +3,5 @@
 $wadah = "bejana";
 $sesuatu = array("air", "tepung", "buah-buahan");
   echo "$wadah didalamnya ada $sesuatu</br>";
-  echo "'$wadah didalamnya ada $sesuatu'"
+  echo "'$wadah didalamnya ada $sesuatu'";
 php>
