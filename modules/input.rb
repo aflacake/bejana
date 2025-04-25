@@ -8,5 +8,9 @@ module Bejana
       input = input.to_i if input.match?(/^\d+$/)
       isi(kunci, input)
     end
+
+    def ambil(kunci)
+      @data[kunci.to_sym]
+    end
   end
 end
