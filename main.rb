@@ -12,5 +12,5 @@ class BejanaApp < Bejana::Wadah
 end
 
 BejanaApp.new do
-
+  #your code
 end
