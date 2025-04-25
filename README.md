@@ -4,7 +4,7 @@ Terinspirasi dari kisah mukjizat Nabi Ilyas yang dapat membut bejana atau wadah 
 Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
 
 # Instalasi
-Di `main.rb`, beri isi kode di 
+Di `main.rb`, beri isi kode di:
 ```rb
 BejanaApp.new do`
 ...
@@ -22,4 +22,4 @@ end
 
 # Berkontribusi
 Membantu menyempurnakan aturan kode?\
-Berikan kontribusi di isu atau fork kode ini
+Berikan kontribusi di isu atau _fork_ kode ini
