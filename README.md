@@ -1,4 +1,25 @@
 # Bejana
-Terisnpirasi dari kisah mukjizat Nabi Ilyas, kumpulan data _dictionary_. Bahasa Pemroraman yang memungkikan pemroessan data dalam jumlah banyak disetiap "isian" dimulai dari blok `mulai` serta eksekusi kode diakhiri dengan `selesai`, bejana juga bahasa pemrograman interprener dan modular sederhana yang bertanggung jawab seutuhnya format.
+Terinspirasi dari kisah mukjizat Nabi Ilyas yang dapat membut bejana atau wadah jumlahya banyak, kumpulan wadah data _dictionary_. Bahasa Pemroraman yang memungkikan pemrosesan data dalam jumlah banyak disetiap "isian" dimulai dari blok `mulai` serta eksekusi kode diakhiri dengan `selesai`, bejana juga bahasa pemrograman interprener dan modular sederhana yang bertanggung jawab seutuhnya format.
 
 Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
+
+# Instalasi
+Di `main.rb`, beri isi kode di 
+```rb
+BejanaApp.new do`
+...
+end
+```
+
+1. Arahkan ke folder bejana
+   ```bash
+   cd path/ke/folder/bejana
+   ```
+2. Tipe ketikan:
+   ```bash
+   ruby main.rb
+   ```
+
+# Berkontribusi
+Membantu menyempurnakan aturan kode?\
+Berikan kontribusi di isu atau fork kode ini
