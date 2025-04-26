@@ -5,6 +5,9 @@ module Bejana
     include Bejana::FungsiInput
     include Bejana::FungsiOutput
     include Bejana::FungsiLogika
+    include Bejana::FungsiLogika::SelainJika
+    include Bejana::FungsiLogika::Selama
+    include Bejana::FungsiLogika::BerhentiJika
 
     def initialize(&block)
       @data = {}
