@@ -5,6 +5,7 @@ module Bejana
     def initialize(&block)
       super(&block)
       @fungsi = {}
+      @last_jika = nil
     end
 
     def fungsi(nama, *parameter, &blok)
@@ -17,7 +18,14 @@ module Bejana
         params = context[:parameters]
         blok = context[:block]
 
-        instance_exec(*args, &blok)
+        old_data = @data.dup
+        params.each_with_indexdo |param, index|
+          @data[param.to_sym] = args[index]
+        end
+
+        result = instance_eval(&block)
+        @data = old_data
+        result
       else
         puts "Fungsi '#{nama}' tidak ditemukan"
       end
@@ -25,9 +33,16 @@ module Bejana
 
     def jika(kunci, kondisi)
       nilai = @data[kunci.to_sym]
-      if kondisi.call(nilai)
-        yield(nil) if block_given?
+      hasil = kondisi.call(nilai)
+
+      if hasil
+        instance_eval(&block)
+      elsif block_given? && block.responnd to?(:else_block)
+        instance_eval(&block.else_block)
       end
     end
+
+    def jika_tidak
+      yield if @last_jika == false && block_given?
   end
 end
