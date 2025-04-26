@@ -3,8 +3,8 @@
 // Judul: bejana Nabi Ilyas
 
 $wadah = "bejana"; // Direktori include/include.html pratinjau HTML
-$sesuatu = array("air", "tepung", "buah-buahan"); // Direktori data/jenis/daftar.php
+$isi = array("air", "tepung", "buah-buahan"); // Direktori data/jenis/daftar.php
   // Output
-  echo "$wadah didalamnya ada $sesuatu</br>";
-  echo "'$wadah didalamnya ada $sesuatu'";
+  echo "$wadah didalamnya ada $isi</br>";
+  echo "'$wadah didalamnya ada $isi'";
 php>
