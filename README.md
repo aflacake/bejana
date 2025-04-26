@@ -4,12 +4,7 @@ Terinspirasi dari kisah mukjizat Nabi Ilyas yang dapat membut bejana atau wadah 
 Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
 
 # Instalasi
-Di `main.rb`, beri isi kode di:
-```rb
-BejanaApp.new do`
-...
-end
-```
+Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan menyintaksnya.
 
 1. Arahkan ke folder bejana
    ```bash
