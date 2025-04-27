@@ -9,7 +9,7 @@ require_relative 'modules/selama'
 require_relative 'modules/berhenti_jika'
 
 class BejanaApp < Bejana::Wadah
-  include Bejana:::FungsiOutput
+  include Bejana::FungsiOutput
   include Bejana::FungsiLogika
   include Bejana::FungsiInput
   include Bejana::FungsiLogika::SelainJika
@@ -17,12 +17,12 @@ class BejanaApp < Bejana::Wadah
   include Bejana::FungsiLogika::BerhentiJika
 end
 
-files = Dir.glob(*/.bjn)
+files = Dir.glob("*.bjn") + Dir.glob("*.gnuc")
 
 if files.empty?
-  puts"Tidak ada file .bjn ditemukan"
+  puts"Tidak ada file .bjn atau .gnuc ditemukan"
   exit
-elsif file.size == 1
+elsif files.size == 1
   bjn_file = file.first
 else
   puts "Pilih file.bjn yang ingin dijalankan"
@@ -33,4 +33,14 @@ else
 end
 
 kode = File.read(bjn_file)
-BejanaApp.new { eval(code) s}
+
+case File.extname(selected_file)
+when ".bjn"
+  BejanaApp.new { eval(code) }
+when ".gnuc"
+  puts "Menjalankan file.gnuc: #{selected_file}"
+  puts "Konten file .gnuc:"
+  puts kode
+else
+  puts"Ekstensi file tidak dikenali"
+end
