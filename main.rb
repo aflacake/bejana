@@ -17,6 +17,8 @@ class BejanaApp < Bejana::Wadah
   include Bejana::FungsiLogika::BerhentiJika
 end
 
+Dir["./plugins/*.rb"].each { |file| require file }
+
 files = Dir.glob("*.bjn") + Dir.glob("*.gnuc")
 
 if files.empty?
