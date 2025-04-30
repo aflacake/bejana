@@ -1,5 +1,7 @@
 # main.rb
 
+require 'yaml'
+
 require_relative 'core'
 require_relative 'modules/output'
 require_relative 'modules/logika'
@@ -16,8 +18,6 @@ class BejanaApp < Bejana::Wadah
   include Bejana::FungsiLogika::Selama
   include Bejana::FungsiLogika::BerhentiJika
 end
-
-Dir["./plugins/*.rb"].each { |file| require file }
 
 files = Dir.glob("*.bjn") + Dir.glob("*.gnuc")
 
@@ -45,4 +45,14 @@ when ".gnuc"
   puts kode
 else
   puts"Ekstensi file tidak dikenali"
+end
+
+Dir["./plugins/*.rb"].each { |file| require file }
+
+config = YAML.load_file('config.yaml')
+
+config["plugins"].each do |plugin_name|
+  require_relative "./plugins/#{plugin_name}"
+  plugin_module = Object.const_get(plugin_name.split('_').map(&:capitalize).join)
+  plugin_module.run(context)
 end
