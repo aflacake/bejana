@@ -1,5 +1,7 @@
 # core.rb
 
+require_relative 'modules/environment_modul'
+
 module Bejana
   class Wadah
     include Bejana::FungsiInput
@@ -9,17 +11,22 @@ module Bejana
     include Bejana::FungsiLogika::Selama
     include Bejana::FungsiLogika::BerhentiJika
 
+    attr_reader :env
+
     def initialize(&block)
-      @data = {}
+      @env = Bejana::EnviromentModul::Environment.new
       instance_eval(&block) if block_given?
     end
 
     def isi(kunci, nilai)
-      @data[kunci.to_sym] = nilai
+      @env.set(kunci, nilai)
     end
 
-    def data
-      @data
+    def ambil(kunci)
+      @env.get(kunci)
     end
+
+    def tampilakn_semua
+    @dev.all.each { |k, v| puts "#{k} => #{v}" }
   end
 end
