@@ -1,0 +1,50 @@
+Bejana - DSL untuk pengolahan data dan visualisasi
+
+============================================================
+
+Deskripsi:
+-----------
+Bejana adalah bahasa pemrograman dsl yang dikembangkan dengan Ruby. Bejana dirancang untuk mempermudah pengguna dalam mendefinisikan dan mengelola konfigurasi data dalam format YAML. Dengan Bejana, pengguna dapat menentukan berbagai modul, termasuk pemrosesan data dan visualisasi, serta menampung nilai-nilai dalam struktur modular dan fleksibel.
+
+Bejana terdiri dari komponen seperti:
+- Konfigurasi data yang ditulis dalam format YAML
+- Pengolahan data dengan modul-modul terpisah
+- Visualisasi hasil yang diproses
+- Dukungan plugin tambahan
+
+============================================================
+
+Instalasi:
+-----------
+1. Pastikan Ruby terinstal di sistem komputer Anda. Periksa versi Rubynya:
+   $ ruby -v
+2. Unduh atau clone repositori Bejana:
+   $ git clone https://github.com/alacake/bejana.git
+3. Instal depensasi yang diperlukan (apabila ada):
+   $ bundle install
+4. Siapkan file konfigurasi `config.yaml` dan file `.bjn`
+
+atau
+
+1. Arahkan ke folder tempat asal muasal filenya
+   cd path/ke/bejana/
+2. Jalankan:
+   ruby main.rb NAMA_FILEMU.bjn
+
+============================================================
+
+Kontribusi
+-----------
+Kontribusi terbuka untuk umum. Silahkan fork repositori, buat perubahan, dan kirim ke pull request.
+
+============================================================
+
+Lisensi
+--------
+Dibawah Apache 2.0, lihat LICENSE di dalam folder Bejana.
+
+============================================================
+
+Sumber
+-------
+https://github.com/aflacake/bejana
