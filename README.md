@@ -1,4 +1,4 @@
-<p align="right">Bahasa Indonesia</p>
+<p align="right">Bahasa: Indonesia</p>
 
 # 🏺 Bejana
 Terinspirasi dari kisah mukjizat Nabi Ilyas yang dapat membut bejana atau wadah jumlahya banyak, kumpulan wadah data _dictionary_. Bahasa Pemroraman yang memungkikan pemrosesan data dalam jumlah banyak disetiap "isian" dimulai dari blok `mulai` serta eksekusi kode diakhiri dengan `selesai`, bejana juga bahasa pemrograman interprener dan modular sederhana yang bertanggung jawab seutuhnya format.
