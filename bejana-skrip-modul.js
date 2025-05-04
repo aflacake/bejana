@@ -53,12 +53,12 @@ const FungsiInput = {
         let parsedInput = input;
 
         if (/^\d+$/.test(input)) {
-            parsedInput = parsedInt(input, 10);
+            parsedInput = parseInt(input, 10);
         }
         return { [kunci]: parsedInput };
     },
     ambil(kunci, environment) {
-        retunr environment.get(kunci);
+        return environment.get(kunci);
     }
 };
 
@@ -75,6 +75,9 @@ const FungsiOutput = {
 
 // Modul Logika Tambahan
 const FungsiLogika = {
+    fungsi: {},
+    data: new Environment(),
+
     fungsi(nama, ...parameter) {
         this.fungsi[nama] = { parameter: parameter };
     },
@@ -144,25 +147,34 @@ class Wadah {
     }
 }
 
-const modul = [
-    aritmatika,
-    logika,
-    FungsiInput,
-    FungsiOutput,
-    FungsiLogika,
-    Wadah,
-    Environment
-];
+const modul = {
+  aritmatika: {
+    tambah: (a, b) => a + b,
+    kurang: (a, b) => a - b,
+    kali: (a, b) => a * b,
+    bagi: (a, b) => a / b
+  },
+  logika,
+  FungsiInput,
+  FungsiOutput,
+  FungsiLogika,
+  Wadah,
+  Environment
+};
 
 function interpret(input) {
-    const match = input.match(/^(\W+)\.(\W+)\(([^)]*)\)$/);
+    const match = input.match(/^(\w+)\.(\w+)\(([^)]*)\)$/);
     if (!match) throw new Error("Format salah. Gunakan format modul.fungsi(arg1, arg2)");
 
     const [, namaModul, namaFungsi, argumenStr] = match;
-    const args = argumenStr.split(',').map(a => JSON.parse(a.trim()));
+    const args = argumenStr
+        .split(',')
+        .map(a => JSON.parse(a.trim()));
 
     const mod = modul[namaModul];
-    if (!mod || !mod[namaFungsi]) throw new Error(`Fungsi ${namaModul}.${namaFungsi} tidak ditemukan.`)
+    if (!mod || typeof mod[namaFungsi] !== 'function') {
+        throw new Error(`Fungsi ${namaModul}.${namaFungsi} tidak ditemukan.`)
+    }
 
     return mod[namaFungsi](...args);
 }
