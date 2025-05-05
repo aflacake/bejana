@@ -178,3 +178,31 @@ function interpret(input) {
 
     return mod[namaFungsi](...args);
 }
+
+
+
+// Menjalankan bejana, jalankan_bejana.js
+const fs = require('fs');
+const readlineSync = require('readline-sync');
+const BejanaInterprener = require('./bejana_interprener');
+const filename = process.argv[2] || 'script.bj'
+
+if (fs.existsSync(filename)) {
+    const lines = fs.readFileSync(filename, 'utf-8').split('\n');
+
+    lines.forEach((line, index) => {
+        line = line.trim();
+        if (line === '' || line.startsWith('#')) {
+            return;
+        }
+        try {
+            const interprener = new BejanaInterpreter();
+            interpreter.jalankan(line);
+        } catch (e) {
+            console.error(`Error di baris {index + 1}: ${line}`);
+            console.error(`Pesan: ${e.message}`)
+        }
+    });
+} else {
+    console.log(`File ${filename} tidak ditemukan`);
+}
