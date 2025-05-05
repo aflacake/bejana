@@ -8,7 +8,7 @@ class BejanaInterprener {
     jalankan(baris) {
         if (/^mulai$/.test(baris)) {
             this.inBlock = true;
-            thiis.blockLines = [];
+            this.blockLines = [];
         } else if (/^selesai$/.test(baris)) {
             this.inBlock = false;
             this.blockLines.forEach(line => this.jalankan(line));
@@ -24,7 +24,7 @@ class BejanaInterprener {
         if (/^isi (\W+)\s+"?(.*?)"?$/.test(baris)) {
             const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
-        } else if {
+        } else if (/^cetak "(.*?)"$/.test(baris)) {
             const teks = baris.replace(/{{(.*?)}}/g, (_, key) => {
                 return this.data[key.trim()] || '';
             });
@@ -238,9 +238,9 @@ if (fs.existsSync(filename)) {
         }
         try {
             const interprener = new BejanaInterpreter();
-            interpreter.jalankan(line);
+            interprener.jalankan(line);
         } catch (e) {
-            console.error(`Error di baris {index + 1}: ${line}`);
+            console.error(`Error di baris ${index + 1}: ${line}`);
             console.error(`Pesan: ${e.message}`)
         }
     });
