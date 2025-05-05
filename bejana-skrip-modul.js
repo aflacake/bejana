@@ -1,3 +1,44 @@
+// ===== bejana_interprener.js =====
+class BejanaInterprener {
+    constructor() {
+        this.data = {};
+        this.inBlock = false;
+        this.blockLines = [];
+    }
+    jalankan(baris) {
+        if (/^mulai$/.test(baris)) {
+            this.inBlock = true;
+            thiis.blockLines = [];
+        } else if (/^selesai$/.test(baris)) {
+            this.inBlock = false;
+            this.blockLines.forEach(line => this.jalankan(line));
+        } else {
+            if (this.inBlock) {
+                this.blockLines.push(baris);
+            } else {
+                this.proses(baris);
+            }
+        }
+    }
+    proses(baris) {
+        if (/^isi (\W+)\s+"?(.*?)"?$/.test(baris)) {
+            const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
+            this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
+        } else if {
+            const teks = baris.replace(/{{(.*?)}}/g, (_, key) => {
+                return this.data[key.trim()] || '';
+            });
+            console.log(teks);
+        } else {
+            console.log(`Perintah tidak dikenali: ${baris}`)
+        }
+    }
+}
+
+module.exports = BejanaInterpreter;
+
+
+// ===== Modules =====
 // Modul
 const aritmatika = {
     tambah: (a, b) => a + b,
@@ -181,7 +222,7 @@ function interpret(input) {
 
 
 
-// Menjalankan bejana, jalankan_bejana.js
+// ===== Menjalankan bejana, jalankan_bejana.js =====
 const fs = require('fs');
 const readlineSync = require('readline-sync');
 const BejanaInterprener = require('./bejana_interprener');
