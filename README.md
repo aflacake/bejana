@@ -26,6 +26,9 @@ Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan m
    ruby main.rb
    ```
 
+Penggunaan luar seperti front-end, Anda bisa memasukkan plug-in yang sudah disediakan, bahwa plugin ini masih dalam proses pengerjakan lebih lanjut,
+Plug-in: https://cdn.jsdelivr.net/gh/aflacake/bejana@main/bejana-skrip-modul.js
+
 # Berkontribusi
 Membantu menyempurnakan aturan kode?\
 Berikan kontribusi di isu atau _fork_ kode ini
