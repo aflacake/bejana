@@ -12,6 +12,8 @@ require_relative 'modules/selain_jika'
 require_relative 'modules/selama'
 require_relative 'modules/berhenti_jika'
 require_relative 'modules/environment_modul'
+require_relative 'modules/basis_data' #database
+require_relative 'modules/penyimapanan_file'
 
 class BejanaApp < Bejana::Wadah
   include Bejana::FungsiOutput
