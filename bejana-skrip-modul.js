@@ -104,7 +104,7 @@ const FungsiInput = {
 };
 
 
-//Modul Output
+// Modul Output
 const FungsiOutput = {
     cetak(teks, data) {
         console.log(teks.replace(/{{(.*?)}}/g, (match, key) => {
@@ -189,6 +189,33 @@ class Wadah {
 }
 
 // ===== Plugins =====
+// ===== AnalitikModul =====
+const AnalitikModul = {
+    deviasiStandar(data) {
+        const mean = data.reduce((a, b) => a + b, 0) / data.length;
+        const variance = data.reduce((sum, val) sum + Math.pow(val - mean,  2), 0) / data.length;
+        return Math.sqrt(variance);
+    }
+};
+
+// ===== ProsesDataModul =====
+const ProsesDataModul = {
+    rataRata(data) {
+        const sum = data.reduce((a, b) => a + b, 0)
+        return sum / data.length;
+    },
+    median(data) {
+        const sorted = [...data].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+
+        if (sorted.length %2 === 0) {
+            return (sorted[mid - 1] + sorted[mid]) / 2;
+        } else {
+            return sorted[mid];
+        }
+    }
+}
+
 // ===== VisualisasiModul =====
 const VisualisasiModul = {
     run: function(context) {
@@ -200,12 +227,12 @@ const VisualisasiModul = {
         if (Array.isArray(obj)) {
             obj.forEach((item, index) => {
                 console.log(`${prefix}- [${index}]:`);
-                this.printStucture(item, indent + 1);
+                this.printStucture(item, indent + 2);
             });
         } else if (obj !== null && typeof obj === 'object') {
             for (const [key, value] of Object.entries(obj)) {
                 console.log(`${prefix}- ${key}:`);
-                this.printStructure(value, indent + 1);
+                this.printStructure(value, indent + 2);
             }
         } else {
             console.log(`${prefix}- ${obj}`);
@@ -221,6 +248,8 @@ const modul = {
   FungsiLogika,
   Wadah,
   Environment,
+  AnalitikModul,
+  ProsesDataModul,
   VisualisasiModul
 };
 
