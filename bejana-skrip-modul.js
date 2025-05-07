@@ -89,9 +89,12 @@ class Environment {
 
 
 // Modul Input
+const promptSync = require('prompt-sync');
+const prompt = promptSync();
+
 const FungsiInput = {
-    isiDariPengguna(kunci, promptFn) {
-        const input = promptFn(`${kunci}: `);
+    isiDariPengguna(kunci) {
+        const input = prompt(`${kunci}: `);
         let parsedInput = input;
 
         if (/^\d+$/.test(input)) {
@@ -213,7 +216,7 @@ class BasisData {
 const fs = require('fs');
 
 class PenyimpananFile {
-    contructor(namaFile) {
+    constructor(namaFile) {
         this.namaFile = namaFile;
     }
     simpan(data) {
@@ -270,7 +273,7 @@ const VisualisasiModul = {
         if (Array.isArray(obj)) {
             obj.forEach((item, index) => {
                 console.log(`${prefix}- [${index}]:`);
-                this.printStucture(item, indent + 2);
+                this.printStructure(item, indent + 2);
             });
         } else if (obj !== null && typeof obj === 'object') {
             for (const [key, value] of Object.entries(obj)) {
@@ -327,6 +330,7 @@ const filename = process.argv[2] || 'script.bj'
 
 if (fs.existsSync(filename)) {
     const lines = fs.readFileSync(filename, 'utf-8').split('\n');
+    const interprener = new BejanaInterpreter();
 
     lines.forEach((line, index) => {
         line = line.trim();
@@ -334,7 +338,6 @@ if (fs.existsSync(filename)) {
             return;
         }
         try {
-            const interprener = new BejanaInterpreter();
             interprener.jalankan(line);
         } catch (e) {
             console.error(`Error di baris ${index + 1}: ${line}`);
