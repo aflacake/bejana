@@ -1,6 +1,8 @@
 <p align="right">Bahasa: Indonesia</p>
 
-# 🏺 Bejana
+# 🏺 Bejana - Database dinamis
+Bejana adalah database yang dinamis dan tidak membutuhkan skema atau tabel yang tetap seperti data relasional. Tanpa memperlakukan setup khusus pada awalnya. Batasan tidak ketat menyimpan data berbagai tipe seperti objek, _array_, _string_, dan angka.
+
 Terinspirasi dari kisah mukjizat Nabi Ilyas yang dapat membut bejana atau wadah jumlahya banyak, kumpulan wadah data _dictionary_. Bahasa Pemroraman yang memungkikan pemrosesan data dalam jumlah banyak disetiap "isian" dimulai dari blok `mulai` serta eksekusi kode diakhiri dengan `selesai`, bejana juga bahasa pemrograman interprener dan modular sederhana yang bertanggung jawab seutuhnya format.
 
 Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
