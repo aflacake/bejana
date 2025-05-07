@@ -188,19 +188,40 @@ class Wadah {
     }
 }
 
+// ===== Plugins =====
+// ===== VisualisasiModul =====
+const VisualisasiModul = {
+    run: function(context) {
+        console.log("Visualisasi Struktur Data Bejana:")
+        this.printStructure(context["data"], 0)
+    }
+    printStructure: function(obj, indent) {
+        const prefix = "".repeat(indent);
+        if (Array.isArray(obj)) {
+            obj.forEach((item, index) => {
+                console.log(`${prefix}- [${index}]:`);
+                this.printStucture(item, indent + 1);
+            });
+        } else if (obj !== null && typeof obj === 'object') {
+            for (const [key, value] of Object.entries(obj)) {
+                console.log(`${prefix}- ${key}:`);
+                this.printStructure(value, indent + 1);
+            }
+        } else {
+            console.log(`${prefix}- ${obj}`);
+        }
+    }
+}
+
 const modul = {
-  aritmatika: {
-    tambah: (a, b) => a + b,
-    kurang: (a, b) => a - b,
-    kali: (a, b) => a * b,
-    bagi: (a, b) => a / b
-  },
+  aritmatika,
   logika,
   FungsiInput,
   FungsiOutput,
   FungsiLogika,
   Wadah,
-  Environment
+  Environment,
+  VisualisasiModul
 };
 
 function interpret(input) {
