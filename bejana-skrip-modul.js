@@ -38,6 +38,7 @@ class BejanaInterprener {
 module.exports = BejanaInterpreter;
 
 
+
 // ===== Modules =====
 // Modul
 const aritmatika = {
@@ -188,8 +189,50 @@ class Wadah {
     }
 }
 
+
+// Modul Basis Data
+class BasisData {
+    constructor() {
+        this.data = [];
+    }
+    tambah(rekam) {
+        this.data.push(rekam);
+    }
+    cari(kriteria) {
+        return this.data.filter(rekam =>
+            Object.entries(kriteria).every([key, value]) => rekam[key] === value)
+        );
+    }
+    semua() {
+        return this.data;
+    }
+}
+
+
+// Modul Penyimpanan File
+const fs = require('fs');
+
+class PenyimpananFile {
+    contructor(namaFile) {
+        this.namaFile = namaFile;
+    }
+    simpan(data) {
+        fs.writeFileSync(this.namaFile, JSON.stringify(data, null, 2), 'utf8');
+    }
+    muat() {
+        if (fs.existsSync(this.namaFile)) {
+            const content = fs.readFileSync(this.namaFile, 'utf8');
+            return JSON.parse(content);
+        } else {
+            return[];
+        }
+    }
+}
+
+
+
 // ===== Plugins =====
-// ===== AnalitikModul =====
+// Modul Analitik
 const AnalitikModul = {
     deviasiStandar(data) {
         const mean = data.reduce((a, b) => a + b, 0) / data.length;
@@ -198,7 +241,7 @@ const AnalitikModul = {
     }
 };
 
-// ===== ProsesDataModul =====
+// Modul Proses Data
 const ProsesDataModul = {
     rataRata(data) {
         const sum = data.reduce((a, b) => a + b, 0)
@@ -216,7 +259,7 @@ const ProsesDataModul = {
     }
 }
 
-// ===== VisualisasiModul =====
+// Modul Visualisasi
 const VisualisasiModul = {
     run: function(context) {
         console.log("Visualisasi Struktur Data Bejana:")
@@ -240,6 +283,8 @@ const VisualisasiModul = {
     }
 }
 
+
+
 const modul = {
   aritmatika,
   logika,
@@ -248,6 +293,8 @@ const modul = {
   FungsiLogika,
   Wadah,
   Environment,
+  BasisData,
+  PenyimpananFile,
   AnalitikModul,
   ProsesDataModul,
   VisualisasiModul
