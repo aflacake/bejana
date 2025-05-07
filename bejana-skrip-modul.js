@@ -40,22 +40,6 @@ module.exports = BejanaInterpreter;
 
 
 // ===== Modules =====
-// Modul
-const aritmatika = {
-    tambah: (a, b) => a + b,
-    kurang: (a, b) => a - b,
-    kali: (a, b) => a * b,
-    bagi: (a, b) => a / b
-};
-
-
-const logika = {
-    dan: (a, b) => a && b,
-    atau: (a, b) => a || b,
-    tidak: (a) => !a
-}
-
-
 // Modul Environment
 class Environment {
     constructor() {
@@ -289,8 +273,6 @@ const VisualisasiModul = {
 
 
 const modul = {
-  aritmatika,
-  logika,
   FungsiInput,
   FungsiOutput,
   FungsiLogika,
