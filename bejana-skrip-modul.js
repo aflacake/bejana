@@ -4,6 +4,7 @@ class BejanaInterprener {
         this.data = {};
         this.inBlock = false;
         this.blockLines = [];
+        this.outputFn = outputFn;
     }
     jalankan(baris) {
         if (/^mulai$/.test(baris)) {
@@ -25,17 +26,16 @@ class BejanaInterprener {
             const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
         } else if (/^cetak "(.*?)"$/.test(baris)) {
-            const teks = baris.replace(/{{(.*?)}}/g, (_, key) => {
+            const teks = baris.match(/^cetak "(.*?)"$/)[1];
+            const hasil = baris.replace(/{{(.*?)}}/g, (_, key) => {
                 return this.data[key.trim()] || '';
             });
-            console.log(teks);
+            this.outputFn(hasil);
         } else {
-            console.log(`Perintah tidak dikenali: ${baris}`)
+            this.outputFn(`Perintah tidak dikenali: ${baris}`)
         }
     }
 }
-
-module.exports = BejanaInterpreter;
 
 
 
@@ -73,9 +73,6 @@ class Environment {
 
 
 // Modul Input
-const promptSync = require('prompt-sync');
-const prompt = promptSync();
-
 const FungsiInput = {
     isiDariPengguna(kunci) {
         const input = prompt(`${kunci}: `);
@@ -104,16 +101,16 @@ const FungsiOutput = {
 
 // Modul Logika Tambahan
 const FungsiLogika = {
-    fungsi: {},
+    fungsiMap: {},
     data: new Environment(),
 
     fungsi(nama, ...parameter) {
-        this.fungsi[nama] = { parameter: parameter };
+        this.fungsiMap[nama] = { parameter: parameter };
     },
 
     panggil(nama, ...args) {
-        if (this.fungsi[nama]) {
-            const context = this.fungsi[nama];
+        if (this.fungsiMap[nama]) {
+            const context = this.fungsiMap[nama];
             const params = context.parameters;
             let result = null;
 
@@ -187,7 +184,7 @@ class BasisData {
     }
     cari(kriteria) {
         return this.data.filter(rekam =>
-            Object.entries(kriteria).every([key, value]) => rekam[key] === value)
+            Object.entries(kriteria).every(([key, value]) => rekam[key] === value)
         );
     }
     semua() {
@@ -197,22 +194,20 @@ class BasisData {
 
 
 // Modul Penyimpanan File
-const fs = require('fs');
-
 class PenyimpananFile {
-    constructor(namaFile) {
-        this.namaFile = namaFile;
+    constructor(namaKunci) {
+        this.namaKunci = namaKunci;
     }
     simpan(data) {
-        fs.writeFileSync(this.namaFile, JSON.stringify(data, null, 2), 'utf8');
+        localStorage.setItem(this.namaKunci, JSON.stringify(data));
     }
     muat() {
-        if (fs.existsSync(this.namaFile)) {
-            const content = fs.readFileSync(this.namaFile, 'utf8');
-            return JSON.parse(content);
-        } else {
-            return[];
+        const isi = localStorage.getItem(this.namaKunci);
+        return isi ? JSON.parse(isi) : [];
         }
+    hapus() {
+        localStorage.removeItem(this.namaKunci);
+    }
     }
 }
 
@@ -223,7 +218,7 @@ class PenyimpananFile {
 const AnalitikModul = {
     deviasiStandar(data) {
         const mean = data.reduce((a, b) => a + b, 0) / data.length;
-        const variance = data.reduce((sum, val) sum + Math.pow(val - mean,  2), 0) / data.length;
+        const variance = data.reduce((sum, val) => sum + Math.pow(val - mean,  2), 0) / data.length;
         return Math.sqrt(variance);
     }
 };
@@ -248,11 +243,11 @@ const ProsesDataModul = {
 
 // Modul Visualisasi
 const VisualisasiModul = {
-    run: function(context) {
+    run(context) {
         console.log("Visualisasi Struktur Data Bejana:")
         this.printStructure(context["data"], 0)
     }
-    printStructure: function(obj, indent) {
+    printStructure(obj, indent = 0) {
         const prefix = "".repeat(indent);
         if (Array.isArray(obj)) {
             obj.forEach((item, index) => {
@@ -305,27 +300,20 @@ function interpret(input) {
 
 
 // ===== Menjalankan bejana, jalankan_bejana.js =====
-const fs = require('fs');
-const readlineSync = require('readline-sync');
-const BejanaInterprener = require('./bejana_interprener');
-const filename = process.argv[2] || 'script.bj'
+const output = document.getElementById("output");
+const interpreter = new BejanaInterpreter(msg => {
+    output.textContent += msg + "\n";
+});
 
-if (fs.existsSync(filename)) {
-    const lines = fs.readFileSync(filename, 'utf-8').split('\n');
-    const interprener = new BejanaInterpreter();
-
-    lines.forEach((line, index) => {
-        line = line.trim();
-        if (line === '' || line.startsWith('#')) {
-            return;
-        }
-        try {
-            interprener.jalankan(line);
-        } catch (e) {
-            console.error(`Error di baris ${index + 1}: ${line}`);
-            console.error(`Pesan: ${e.message}`)
-        }
-    });
-} else {
-    console.log(`File ${filename} tidak ditemukan`);
+function jalankanSkrip() {
+    output.textContent = "";
+    const kode = document.getElementById("kode").value;
+    const baris = kode.split("\n");
+    baris.forEach(line => interpreter.jalankan(line.trim());
 }
+
+function bersihkan() {
+    output.textContent = "";
+}
+window.BejanaInterpreter = BejanaInterpreter;
+window.interpret = interpret;
