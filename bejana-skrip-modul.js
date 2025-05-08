@@ -305,8 +305,8 @@ function interpret(input) {
 
 // ===== Menjalankan bejana, jalankan_bejana.js =====
 const output = document.getElementById("output");
-const interpreter = new BejanaInterprener(msg => {
-    output.textContent += msg + "\n";
+const interpreter = new BejanaInterpreter(msg => {
+  output.textContent += msg + "\n";
 });
 
 function jalankanSkrip() {
