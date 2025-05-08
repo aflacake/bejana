@@ -4,7 +4,7 @@ class BejanaInterprener {
         this.data = {};
         this.inBlock = false;
         this.blockLines = [];
-        this.outputFn = outputFn;
+        this.outputFn = outputFn || function(msg) { console.log(msg); };
     }
     jalankan(baris) {
         if (/^mulai$/.test(baris)) {
@@ -285,10 +285,14 @@ function interpret(input) {
     if (!match) throw new Error("Format salah. Gunakan format modul.fungsi(arg1, arg2)");
 
     const [, namaModul, namaFungsi, argumenStr] = match;
-    const args = argumenStr
-        .split(',')
-        .map(a => JSON.parse(a.trim()));
-
+    const args = argumenStr.split(',').map(a => {
+        try {
+            JSON.parse(a.trim()));
+        } catch (e) {
+            return a.trim();
+        }
+    });
+            
     const mod = modul[namaModul];
     if (!mod || typeof mod[namaFungsi] !== 'function') {
         throw new Error(`Fungsi ${namaModul}.${namaFungsi} tidak ditemukan.`)
@@ -301,7 +305,7 @@ function interpret(input) {
 
 // ===== Menjalankan bejana, jalankan_bejana.js =====
 const output = document.getElementById("output");
-const interpreter = new BejanaInterpreter(msg => {
+const interpreter = new BejanaInterprener(msg => {
     output.textContent += msg + "\n";
 });
 
