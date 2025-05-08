@@ -22,7 +22,7 @@ class BejanaInterprener {
         }
     }
     proses(baris) {
-        if (/^isi (\W+)\s+"?(.*?)"?$/.test(baris)) {
+        if (/^isi (\w+)\s+"?(.*?)"?$/.test(baris)) {
             const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
         } else if (/^cetak "(.*?)"$/.test(baris)) {
