@@ -1,5 +1,9 @@
 # bejana_interprener.rb
 
+require_relative 'modules/navigator_modul'
+
+@navigator = Bejana::NavigatorModul::Navigator.new(self)
+
 class BejanaInterprener
   def initialize
     @data = {}
@@ -9,20 +13,33 @@ class BejanaInterprener
 
   def jalankan(baris)
     case baris
-    when /^mulai$/
+    when /^langkah (\w+)$/
       @in_block = true
-      @block_lines = []
+      @step_name = $1
+      @step_lines = []
     when /^selesai$/
-      @in_block = false
-      @block_lines.each { |line| jalankan(line) }
+      if @in_step
+        lines = @step_lines.dup
+        @navigator.tambah(@step_name) do
+          lines.each do |1|
+            hasil = proses(1)
+            return hasil if hasil.is_a?(Symbol)
+          end
+          nil
+        end
+        @in_step = false
+      end
+    when /^mulai_dari (\w+)$/
+      @navigator.mulai_dari($1)
     else
-      if @in_block
-        @block_lines << baris
+      if @in_step
+        @step lines << baris
       else
         proses(baris)
       end
     end
   end
+      
 
   private
 
@@ -34,6 +51,8 @@ class BejanaInterprener
     when /^cetak "(.*?)"$/
       teks = $1.gsub(/{{(.*?)}}/) { @data[$1.strip.to_sym] }
       puts teks
+    when /^lanjut ke (\w+)$/
+      return $1.to_sym
     else
       puts "Perintah tidak dikenali: #{baris}"
     end
