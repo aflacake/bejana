@@ -309,7 +309,7 @@ function jalankanSkrip() {
     output.textContent = "";
     const kode = document.getElementById("kode").value;
     const baris = kode.split("\n");
-    baris.forEach(line => interpreter.jalankan(line.trim());
+    baris.forEach(line => interpreter.jalankan(line.trim()));
 }
 
 function bersihkan() {
