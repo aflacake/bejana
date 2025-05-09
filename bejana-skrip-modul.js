@@ -1,10 +1,12 @@
 // ===== bejana_interprener.js =====
-class BejanaInterprener {
+class BejanaInterpreter {
     constructor() {
         this.data = {};
         this.inBlock = false;
         this.blockLines = [];
-        this.outputFn = outputFn || function(msg) { console.log(msg); };
+        constructor(outputFn) {
+            this.outputFn = outputFn || function(msg) { console.log(msg); };
+        }
     }
     jalankan(baris) {
         if (/^mulai$/.test(baris)) {
@@ -23,7 +25,7 @@ class BejanaInterprener {
     }
     proses(baris) {
         if (/^isi (\w+)\s+"?(.*?)"?$/.test(baris)) {
-            const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
+            const [_, kunci, nilai] = baris.match(/^isi (\w+)\s+"?(.*?)"?$/);
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
         } else if (/^cetak "(.*?)"$/.test(baris)) {
             const teks = baris.match(/^cetak "(.*?)"$/)[1];
@@ -246,7 +248,7 @@ const VisualisasiModul = {
     run(context) {
         console.log("Visualisasi Struktur Data Bejana:")
         this.printStructure(context["data"], 0)
-    }
+    },
     printStructure(obj, indent = 0) {
         const prefix = "".repeat(indent);
         if (Array.isArray(obj)) {
@@ -285,9 +287,10 @@ function interpret(input) {
     if (!match) throw new Error("Format salah. Gunakan format modul.fungsi(arg1, arg2)");
 
     const [, namaModul, namaFungsi, argumenStr] = match;
+    
     const args = argumenStr.split(',').map(a => {
         try {
-            JSON.parse(a.trim()));
+            return JSON.parse(a.trim());
         } catch (e) {
             return a.trim();
         }
