@@ -267,6 +267,7 @@ const VisualisasiModul = {
     }
 }
 
+// Modul Unggah
 async function unggahFileBjn() {
     const fileInput = document.getElementById("bjnFile");
     const urlInput = document.getElementById("uploadUrl");
@@ -300,6 +301,52 @@ async function unggahFileBjn() {
     } catch (err) {
         alert("Terjadi kesalahan saat mengunggah: " + err.message);
     }
+}
+
+// Modul Konversi bejana ke JSON
+function konversiBjnKeJson() {
+    const fileInput = document.getElementById("bjnFileInput");
+    const output = document.getElementById("output");
+
+    const file = fileInput.files[0];
+    if (!file) {
+        alert("Pilih file .bjn ");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const lines = e.target.result.split('\n');
+        const data = {};
+
+        lines.forEach((line, index) => {
+            line = line.trim();
+            if (line === "" || line.startsWith('#')) return;
+            
+            if (/^isi (\w+)\s+"?(.*?)"?$/.test(line)) {
+                const [_, key, value] = line.match(/^isi (\w+)\s+"?(.*?)"?$/);
+                data[key] = /^\d+$/.test(value) ? parseInt(value, 10) : value;
+            } else if (/^cetak "(.*?)"$/.test(line)) {
+                const [, template] = line.match(/^cetak "(.*?)"$/);
+                const outputText = template.replace(/{{(.*?)}}/g, (_, key) => data[key.trim()] ?? '');
+                console.log(outputText);
+                output.textContent += outputText + "\n";
+            } else {
+                console.warn(`Perintah tidak dikenali: ${index + 1}: ${line}`)
+            }
+        });
+        const jsonString = JSON.stringify(data, null, 2);
+        console.log("JSON hasil:", jsonString);
+        output.textContent += "\nData JSON:\n" + jsonString;
+
+        const blob = new Blob([jsonString], { type: "application/json" })
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "file.json";
+        a.textContent = "Unduh file JSON";
+        document.body.appendChild(a);
+    };
+    reader.readAsText(file);
 }
 
 
