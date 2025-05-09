@@ -23,9 +23,14 @@ Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan m
    ```bash
    cd path/ke/folder/bejana
    ```
-2. Tipe ketikan:
+2. Tipe ketikan untuk tipe file khusus:
    ```bash
-   ruby jalankan_bejana.rb
+   ruby jalankan_bejana.rb NAMA_FILE.bjn
+   ```
+   atau bisa mode penuh, plugin, dan konfigurasi:
+   > File plugin bawaan telah disediakan, Anda dapat menambahkan plugin lainnya dari luar dan itu boleh untuk dijalankan saja. Namun dalam menjalankan di file luar tidak memperbolehkan sebagi menyatakan bagian dari Bejana itu sendiri.
+   ```bash
+   ruby main.rb
    ```
 
 Penggunaan luar seperti front-end, Anda bisa memasukkan plug-in yang sudah disediakan, bahwa plugin ini masih dalam proses pengerjakan lebih lanjut,
