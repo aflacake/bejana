@@ -11,10 +11,10 @@ Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuata
 - [X] Variable dan value dalam jumlah banyak
 - [x] Menyimpan data dalam jumlah yang banyak
 - [x] Interegrasi dengan `.gnuc` yang mumpuni di dalam pengelolaan data luar
+- [X] JSON File ekspor
 
 Segera hadir:
 - [ ] Kode dapat kirim ke penyimpanan data server
-- [ ] JSON File ekspor
 
 # Instalasi
 Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan menyintaksnya.
