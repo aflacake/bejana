@@ -25,11 +25,12 @@ Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan m
    ```
 2. Tipe ketikan:
    ```bash
-   ruby main.rb
+   ruby jalankan_bejana.rb
    ```
 
 Penggunaan luar seperti front-end, Anda bisa memasukkan plug-in yang sudah disediakan, bahwa plugin ini masih dalam proses pengerjakan lebih lanjut,
-Plug-in: https://cdn.jsdelivr.net/gh/aflacake/bejana@main/bejana-skrip-modul.js
+Plug-in: https://cdn.jsdelivr.net/gh/aflacake/bejana@main/bejana-skrip-modul.js.
+   > Terkadang pembaruan kini sedang usang dan tidak relevan, sedang membutuhkan kontribusi dari Anda? tertarik? mulai fork sekarang.
 
 # Berkontribusi
 Membantu menyempurnakan aturan kode?\
