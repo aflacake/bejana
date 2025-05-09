@@ -267,6 +267,41 @@ const VisualisasiModul = {
     }
 }
 
+async function unggahFileBjn() {
+    const fileInput = document.getElementById("bjnFile");
+    const urlInput = document.getElementById("uploadUrl");
+    const file = fileInput.files[0];
+    const url = urlInput.value.trim();
+
+    if (!file) {
+        alert("Silahkan pilih file .bjn terlebih dahulu.")
+        return;
+    }
+    if (!url) {
+        alert("Masukkan URL server tujuan.")
+        return;
+    }
+
+    const formData = new FormData();
+    formData.appned("file", file);
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData
+        });
+
+        if (response.ok) {
+            alert("File berhasil terunggah!");
+        } else {
+            const errorText = await response.text();
+            alert("Gagal menggunggah file: " + errorText);
+        }
+    } catch (err) {
+        alert("Terjadi kesalahan saat mengunggah: " + err.message);
+    }
+}
+
 
 
 const modul = {
