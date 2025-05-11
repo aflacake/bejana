@@ -1,12 +1,10 @@
 // ===== bejana_interprener.js =====
-class BejanaInterpreter {
+class BejanaInterprener {
     constructor() {
         this.data = {};
         this.inBlock = false;
         this.blockLines = [];
-        constructor(outputFn) {
-            this.outputFn = outputFn || function(msg) { console.log(msg); };
-        }
+        this.outputFn = outputFn || function(msg) { console.log(msg); };
     }
     jalankan(baris) {
         if (/^mulai$/.test(baris)) {
@@ -25,7 +23,7 @@ class BejanaInterpreter {
     }
     proses(baris) {
         if (/^isi (\w+)\s+"?(.*?)"?$/.test(baris)) {
-            const [_, kunci, nilai] = baris.match(/^isi (\w+)\s+"?(.*?)"?$/);
+            const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
         } else if (/^cetak "(.*?)"$/.test(baris)) {
             const teks = baris.match(/^cetak "(.*?)"$/)[1];
@@ -103,6 +101,8 @@ const FungsiOutput = {
 
 // Modul Logika Tambahan
 const FungsiLogika = {
+    _stopLoop: false,
+
     fungsiMap: {},
     data: new Environment(),
 
@@ -131,20 +131,27 @@ const FungsiLogika = {
 
     jika(kunci, kondisi, block) {
         const nilai = this.data.get(kunci);
-        const hasil = kondisi(nilai);
 
-        if (hasil) {
+        if (kondisi(nilai)) {
             block();
-        } else if (this.lastJika === false && this.elseBlock) {
-            this.elseBlock();
         }
     },
+
     selainJika(kunci, kondisi, block) {
         this.elseBlock = block;
     },
+
+    berhentiJika(kondisi) {
+        if (typeof kondisi === 'function' && kondisi()) {
+            this._stopLoop = true;
+        }
+    },
+
     selama(kondisi, aksi) {
+        this._stopLoop = false;
         while (kondisi()) {
             aksi();
+            if (this._stopLoop) break;
         }
     }
 };
@@ -173,6 +180,20 @@ class Wadah {
     tampilan(isi = null) {
         console.log(isi || JSON.stringify(this.data, null, 2));
     }
+}
+
+function buatWadah() {
+    const wadah = new Wadah();
+
+    return new Proxy(wadah, {
+        get(target, prop) {
+            if (typeof target[prop] !== "undefiend") {
+                return target[prop];
+            } else {
+                return (...args) => target.methodMissing(prop, ...args);
+            }
+        }
+    });
 }
 
 
@@ -248,7 +269,7 @@ const VisualisasiModul = {
     run(context) {
         console.log("Visualisasi Struktur Data Bejana:")
         this.printStructure(context["data"], 0)
-    },
+    }
     printStructure(obj, indent = 0) {
         const prefix = "".repeat(indent);
         if (Array.isArray(obj)) {
@@ -267,86 +288,25 @@ const VisualisasiModul = {
     }
 }
 
-// Modul Unggah
-async function unggahFileBjn() {
-    const fileInput = document.getElementById("bjnFile");
-    const urlInput = document.getElementById("uploadUrl");
-    const file = fileInput.files[0];
-    const url = urlInput.value.trim();
-
-    if (!file) {
-        alert("Silahkan pilih file .bjn terlebih dahulu.")
-        return;
-    }
-    if (!url) {
-        alert("Masukkan URL server tujuan.")
-        return;
+// Modul Navigator
+class Navigator {
+    constructor(context = {}) {
+        this.langkah = {};
+        this.current = null;
+        this.context = context;
     }
 
-    const formData = new FormData();
-    formData.appned("file", file);
+    tambah(nama, block) {
+       this.langkah[nama] = blok;
+    }
 
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            body: formData
-        });
-
-        if (response.ok) {
-            alert("File berhasil terunggah!");
-        } else {
-            const errorText = await response.text();
-            alert("Gagal menggunggah file: " + errorText);
+    mulaiDari(nama) {
+        this.current = nama;
+        while(this.current && typeof this.langkah[this.current] === 'function') {
+            const blok = this.langkah[this.current];
+            this.current = blok.call(this.context);
         }
-    } catch (err) {
-        alert("Terjadi kesalahan saat mengunggah: " + err.message);
     }
-}
-
-// Modul Konversi bejana ke JSON
-function konversiBjnKeJson() {
-    const fileInput = document.getElementById("bjnFileInput");
-    const output = document.getElementById("output");
-
-    const file = fileInput.files[0];
-    if (!file) {
-        alert("Pilih file .bjn ");
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const lines = e.target.result.split('\n');
-        const data = {};
-
-        lines.forEach((line, index) => {
-            line = line.trim();
-            if (line === "" || line.startsWith('#')) return;
-            
-            if (/^isi (\w+)\s+"?(.*?)"?$/.test(line)) {
-                const [_, key, value] = line.match(/^isi (\w+)\s+"?(.*?)"?$/);
-                data[key] = /^\d+$/.test(value) ? parseInt(value, 10) : value;
-            } else if (/^cetak "(.*?)"$/.test(line)) {
-                const [, template] = line.match(/^cetak "(.*?)"$/);
-                const outputText = template.replace(/{{(.*?)}}/g, (_, key) => data[key.trim()] ?? '');
-                console.log(outputText);
-                output.textContent += outputText + "\n";
-            } else {
-                console.warn(`Perintah tidak dikenali: ${index + 1}: ${line}`)
-            }
-        });
-        const jsonString = JSON.stringify(data, null, 2);
-        console.log("JSON hasil:", jsonString);
-        output.textContent += "\nData JSON:\n" + jsonString;
-
-        const blob = new Blob([jsonString], { type: "application/json" })
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "file.json";
-        a.textContent = "Unduh file JSON";
-        document.body.appendChild(a);
-    };
-    reader.readAsText(file);
 }
 
 
@@ -369,10 +329,9 @@ function interpret(input) {
     if (!match) throw new Error("Format salah. Gunakan format modul.fungsi(arg1, arg2)");
 
     const [, namaModul, namaFungsi, argumenStr] = match;
-    
     const args = argumenStr.split(',').map(a => {
         try {
-            return JSON.parse(a.trim());
+            JSON.parse(a.trim()));
         } catch (e) {
             return a.trim();
         }
