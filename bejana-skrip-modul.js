@@ -27,8 +27,8 @@ class BejanaInterpreter {
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
         } else if (/^cetak "(.*?)"$/.test(baris)) {
             const teks = baris.match(/^cetak "(.*?)"$/)[1];
-            const hasil = baris.replace(/{{(.*?)}}/g, (_, key) => {
-                return this.data[key.trim()] || '';
+            const hasil = teks.replace(/{{(.*?)}}/g, (_, key) => {
+                return this.data[key.trim()] ?? '';
             });
             this.outputFn(hasil);
         } else {
@@ -102,6 +102,7 @@ const FungsiOutput = {
 // Modul Logika Tambahan
 const FungsiLogika = {
     _stopLoop: false,
+    _terakhirJikaBenar: false,
 
     fungsiMap: {},
     data: new Environment(),
@@ -113,7 +114,7 @@ const FungsiLogika = {
     panggil(nama, ...args) {
         if (this.fungsiMap[nama]) {
             const context = this.fungsiMap[nama];
-            const params = context.parameters;
+            const params = context.parameter;
             let result = null;
 
             const oldData = { ...this.data.all() };
@@ -133,12 +134,20 @@ const FungsiLogika = {
         const nilai = this.data.get(kunci);
 
         if (kondisi(nilai)) {
+            this._terakhirJikaBenar = true;
             block();
+        } else {
+            this._terakhirJikaBenar = false;
         }
     },
 
     selainJika(kunci, kondisi, block) {
-        this.elseBlock = block;
+        if (!this.this._terakhirJikaBenar) {
+            const nilai = this.data.get(kunci);
+            if (kondisi(nilai)) {
+                block();
+            }
+        }
     },
 
     berhentiJika(kondisi) {
@@ -172,7 +181,7 @@ class Wadah {
         return this;
     }
     jalankan() {
-        this.actions.forEach(actions => {
+        this.actions.forEach(action => {
             console.log(`Menjalankan ${action.name}`);
             action.block();
         });
@@ -230,7 +239,6 @@ class PenyimpananFile {
         }
     hapus() {
         localStorage.removeItem(this.namaKunci);
-    }
     }
 }
 
@@ -331,7 +339,7 @@ function interpret(input) {
     const [, namaModul, namaFungsi, argumenStr] = match;
     const args = argumenStr.split(',').map(a => {
         try {
-            JSON.parse(a.trim());
+            return JSON.parse(a.trim());
         } catch (e) {
             return a.trim();
         }
