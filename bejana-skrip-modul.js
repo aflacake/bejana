@@ -1,10 +1,10 @@
 // ===== bejana_interprener.js =====
-class BejanaInterprener {
-    constructor() {
+class BejanaInterpreter {
+    constructor(outputFn = (msg) => console.log(msg)) {
+        this.outputFn = outputFn;
         this.data = {};
         this.inBlock = false;
         this.blockLines = [];
-        this.outputFn = outputFn || function(msg) { console.log(msg); };
     }
     jalankan(baris) {
         if (/^mulai$/.test(baris)) {
@@ -23,7 +23,7 @@ class BejanaInterprener {
     }
     proses(baris) {
         if (/^isi (\w+)\s+"?(.*?)"?$/.test(baris)) {
-            const [_, kunci, nilai] = baris.match(/^isi (\W+)\s+"?(.*?)"?$/);
+            const [_, kunci, nilai] = baris.match(/^isi (\w+)\s+"?(.*?)"?$/);
             this.data[kunci] = isNaN(parseInt(nilai)) ? nilai : parseInt(nilai);
         } else if (/^cetak "(.*?)"$/.test(baris)) {
             const teks = baris.match(/^cetak "(.*?)"$/)[1];
@@ -187,7 +187,7 @@ function buatWadah() {
 
     return new Proxy(wadah, {
         get(target, prop) {
-            if (typeof target[prop] !== "undefiend") {
+            if (typeof target[prop] !== "undefined") {
                 return target[prop];
             } else {
                 return (...args) => target.methodMissing(prop, ...args);
@@ -269,7 +269,7 @@ const VisualisasiModul = {
     run(context) {
         console.log("Visualisasi Struktur Data Bejana:")
         this.printStructure(context["data"], 0)
-    }
+    },
     printStructure(obj, indent = 0) {
         const prefix = "".repeat(indent);
         if (Array.isArray(obj)) {
@@ -297,7 +297,7 @@ class Navigator {
     }
 
     tambah(nama, block) {
-       this.langkah[nama] = blok;
+       this.langkah[nama] = block;
     }
 
     mulaiDari(nama) {
@@ -331,7 +331,7 @@ function interpret(input) {
     const [, namaModul, namaFungsi, argumenStr] = match;
     const args = argumenStr.split(',').map(a => {
         try {
-            JSON.parse(a.trim()));
+            JSON.parse(a.trim());
         } catch (e) {
             return a.trim();
         }
