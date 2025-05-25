@@ -1,4 +1,5 @@
 <p align="right">Bahasa: Indonesia</p>
+<img src="https://raw.githubusercontent.com/aflacake/bejana/main/img/Logo%20Bejana%20icon.png" width="150px" height="150px" alt="Logo Bejana" />
 
 # 🏺 Bejana - Database dan Tampilan Dinamis
 Bejana adalah database yang dinamis dan tidak membutuhkan skema atau tabel yang tetap seperti data relasional. Tanpa memperlakukan setup khusus pada awalnya. Batasan tidak ketat menyimpan data berbagai tipe seperti objek, _array_, _string_, dan angka. Bejana sendiri sudah satu paket untuk menampilkan datanya sendiri dari database yang Anda buat.
