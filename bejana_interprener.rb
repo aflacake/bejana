@@ -1,14 +1,14 @@
 # bejana_interprener.rb
 
+require 'json'
 require_relative 'modules/navigator_modul'
-
-@navigator = Bejana::NavigatorModul::Navigator.new(self)
 
 class BejanaInterprener
   def initialize
     @data = {}
     @in_block = false
     @block_lines = []
+    @navigator = Bejana::NavigatorModul::Navigator.new(self)
   end
 
   def jalankan(baris)
@@ -21,8 +21,8 @@ class BejanaInterprener
       if @in_step
         lines = @step_lines.dup
         @navigator.tambah(@step_name) do
-          lines.each do |1|
-            hasil = proses(1)
+          lines.each do |line|
+            hasil = proses(line)
             return hasil if hasil.is_a?(Symbol)
           end
           nil
@@ -33,7 +33,7 @@ class BejanaInterprener
       @navigator.mulai_dari($1)
     else
       if @in_step
-        @step lines << baris
+        @step_lines << baris
       else
         proses(baris)
       end
@@ -53,8 +53,35 @@ class BejanaInterprener
       puts teks
     when /^lanjut ke (\w+)$/
       return $1.to_sym
+    when /^simpan$/
+      simpan_ke_file
+    when /^muat$/
+      muat_dari_file
+    when /^ambil semua dengan (\w+)\s*(==|!=|>=|<=|>|<|)\s*(\d+)$/
+      kunci, operator, nilai = $1.to_sym, $2, $3, nilai.to_i
+      cocok = @data.select do |k, v|
+        v = v.to_i if v.to_s =~ /^\d+$/
+        v.send(operator, nilai) rescue false
+      end
+      puts "Hasil filter:"
+      cocok.each { |k, v| puts "#{k}: #{v}" }
     else
       puts "Perintah tidak dikenali: #{baris}"
+    end
+  end
+
+  def simpan_ke_file(nama_file = "bejana_data.json")
+      File.write(nama_file, @data.to_json)
+      puts "Data berhasil disimpan ke #{nama_file}"
+  end
+
+  def muat_dari_file(nama_file = "bejana_data.json")
+    if File.exist?(nama_file)
+       json_data = JSON.parse(File.read(nama_file))
+       @data = json_data.transform_keys(&:to_sym)
+       puts "Data berhasil dimuat dari #{nama_file}"
+    else
+      puts "File #{nama_file} tidak ditemukan"
     end
   end
 end
