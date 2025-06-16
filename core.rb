@@ -14,7 +14,7 @@ module Bejana
     attr_reader :env
 
     def initialize(&block)
-      @env = Bejana::EnviromentModul::Environment.new
+      @env = Bejana::EnvironmentModul::Environment.new
       instance_eval(&block) if block_given?
     end
 
@@ -26,7 +26,8 @@ module Bejana
       @env.get(kunci)
     end
 
-    def tampilakn_semua
-    @dev.all.each { |k, v| puts "#{k} => #{v}" }
+    def tampilkan_semua
+      @env.all.each { |k, v| puts "#{k} => #{v}" }
+    end
   end
 end
