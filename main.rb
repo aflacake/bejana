@@ -8,12 +8,10 @@ require_relative 'core'
 require_relative 'modules/output'
 require_relative 'modules/logika'
 require_relative 'modules/input'
-require_relative 'modules/selain_jika'
+require_relative 'modules/logika/selain_jika'
 require_relative 'modules/selama'
-require_relative 'modules/berhenti_jika'
+require_relative 'modules/logika/berhenti_jika'
 require_relative 'modules/environment_modul'
-require_relative 'modules/basis_data' #database
-require_relative 'modules/penyimapanan_file'
 
 class BejanaApp < Bejana::Wadah
   include Bejana::FungsiOutput
@@ -26,15 +24,15 @@ class BejanaApp < Bejana::Wadah
  attr_reader :env
 end
 
-files = Dir.glob("*.bjn") + Dir.glob("*.gnuc")
+files = Dir.glob("*.bjn") + Dir.glob("*.pearl")
 
 if files.empty?
-  puts"Tidak ada file .bjn atau .gnuc ditemukan"
+  puts"Tidak ada file .bjn atau .pearl ditemukan"
   exit
 elsif files.size == 1
   bjn_file = files.first
 else
-  puts "Pilih file.bjn yang ingin dijalankan"
+  puts "Pilih file .bjn yang ingin dijalankan"
   files.each.with_index { |f, i| puts"#{i + 1}.#{f}" }
   print ">"
   index = gets.chomp.to_i - 1
@@ -46,9 +44,9 @@ kode = File.read(bjn_file)
 case File.extname(selected_file)
 when ".bjn"
   BejanaApp.new { eval(code) }
-when ".gnuc"
-  puts "Menjalankan file.gnuc: #{selected_file}"
-  puts "Konten file .gnuc:"
+when ".pearl"
+  puts "Menjalankan file .pearl: #{selected_file}"
+  puts "Konten file .pearl:"
   puts kode
 else
   puts"Ekstensi file tidak dikenali"
