@@ -6,7 +6,7 @@ module Bejana
       def initialize(content = nil)
         @langkah = {}
         @current = nil
-        @context = context
+        @context = content
       end
 
       def tambah(nama, &blok)
