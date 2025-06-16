@@ -18,7 +18,7 @@ class BejanaInterprener
       @step_name = $1
       @step_lines = []
     when /^selesai$/
-      if @in_step
+      if @in_block
         lines = @step_lines.dup
         @navigator.tambah(@step_name) do
           lines.each do |line|
@@ -27,12 +27,12 @@ class BejanaInterprener
           end
           nil
         end
-        @in_step = false
+        @in_block = false
       end
     when /^mulai_dari (\w+)$/
       @navigator.mulai_dari($1)
     else
-      if @in_step
+      if @in_block
         @step_lines << baris
       else
         proses(baris)
