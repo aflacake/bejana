@@ -1,3 +1,5 @@
+# config.yaml
+
 plugins:
  - proses_data_modul
  - visualisasi_modul
