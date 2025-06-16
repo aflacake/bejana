@@ -3,6 +3,8 @@
 require_relative 'modules/input'
 require_relative 'modules/output'
 require_relative 'modules/logika'
+require_relative 'modules/logika/selain_jika'
+require_relative 'modules/berhenti_jika'
 require_relative 'modules/environment_modul'
 
 module Bejana
