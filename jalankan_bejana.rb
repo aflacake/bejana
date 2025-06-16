@@ -1,5 +1,6 @@
 # jalankan_bejana.rb
 
+require_relative 'bejana_interprener'
 interprener = BejanaInterprener.new
 
 # Baca dari file
