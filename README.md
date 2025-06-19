@@ -11,7 +11,7 @@ Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuata
 # Mendukung
 - [X] Variable dan value dalam jumlah banyak
 - [x] Menyimpan data dalam jumlah yang banyak
-- [x] Interegrasi dengan `.gnuc` yang mumpuni di dalam pengelolaan data luar
+- [x] Interegrasi dengan `.earl` yang mumpuni di dalam pengelolaan data luar
 - [X] Kode dapat kirim ke penyimpanan data server
 - [X] JSON File ekspor
 
