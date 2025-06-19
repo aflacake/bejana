@@ -24,10 +24,10 @@ class BejanaApp < Bejana::Wadah
  attr_reader :env
 end
 
-files = Dir.glob("*.bjn") + Dir.glob("*.pearl")
+files = Dir.glob("*.bjn") + Dir.glob("*.earl")
 
 if files.empty?
-  puts"Tidak ada file .bjn atau .pearl ditemukan"
+  puts"Tidak ada file .bjn atau .earl ditemukan"
   exit
 elsif files.size == 1
   bjn_file = files.first
@@ -44,9 +44,9 @@ kode = File.read(bjn_file)
 case File.extname(selected_file)
 when ".bjn"
   BejanaApp.new { eval(code) }
-when ".pearl"
-  puts "Menjalankan file .pearl: #{selected_file}"
-  puts "Konten file .pearl:"
+when ".earl"
+  puts "Menjalankan file .earl: #{selected_file}"
+  puts "Konten file .earl:"
   puts kode
 else
   puts"Ekstensi file tidak dikenali"
