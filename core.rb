@@ -16,23 +16,25 @@ module Bejana
     include Bejana::FungsiLogika::Selama
     include Bejana::FungsiLogika::BerhentiJika
 
-    attr_reader :env
+    attr_reader :env, :data
 
     def initialize(&block)
       @env = Bejana::EnvironmentModul::Environment.new
+      @data = {}
       instance_eval(&block) if block_given?
     end
 
     def isi(kunci, nilai)
+      @data[kunci.to_sym] = nilai
       @env.set(kunci, nilai)
     end
 
     def ambil(kunci)
-      @env.get(kunci)
+      @data[kunci.to_sym] || @env.get(kunci)
     end
 
     def tampilkan_semua
-      @env.all.each { |k, v| puts "#{k} => #{v}" }
+      @data.each { |k, v| puts "#{k} => #{v}" }
     end
   end
 end
