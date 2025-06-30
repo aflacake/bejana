@@ -1,4 +1,4 @@
-# logika.rb
+# modules/logika.rb
 
 module Bejana
   module FungsiLogika
