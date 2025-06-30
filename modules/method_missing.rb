@@ -1,4 +1,4 @@
-# method_missing.rb
+# modules/method_missing.rb
 
 class Wadah
   def initilize
