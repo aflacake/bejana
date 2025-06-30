@@ -4,7 +4,6 @@ require 'yaml'
 
 require_relative 'core'
 
-require_relative 'core'
 require_relative 'modules/output'
 require_relative 'modules/logika'
 require_relative 'modules/input'
