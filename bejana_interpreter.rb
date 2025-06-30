@@ -3,7 +3,7 @@
 require 'json'
 require_relative 'modules/navigator_modul'
 
-class BejanaInterprener
+class BejanaInterpreter
   def initialize
     @data = {}
     @in_block = false
