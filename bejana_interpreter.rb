@@ -1,4 +1,4 @@
-# bejana_interprener.rb
+# bejana_interpreter.rb
 
 require 'json'
 require_relative 'modules/navigator_modul'
