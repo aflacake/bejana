@@ -3,7 +3,7 @@
 module Bejana
   module FungsiOutput
     def cetak(teks)
-    puts teks.gsub(/{{(.*?)}}/) { |m| @data[$1.strip.to_sym].to_s }
+      puts teks.gsub(/{{(.*?)}}/) { |m| @env.get($1.strip.to_sym).to_s }
     end
   end
 end
