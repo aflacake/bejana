@@ -1,4 +1,4 @@
-# environment_modul.rb
+# modules/environment_modul.rb
 
 module Bejana
   module EnvironmentModul
