@@ -1,7 +1,7 @@
 # jalankan_bejana.rb
 
-require_relative 'bejana_interprener'
-interprener = BejanaInterprener.new
+require_relative 'bejana_interpreter'
+interpreter = BejanaInterpreter.new
 
 # Baca dari file
 filename = ARGV[0] || 'script.bj'
@@ -11,7 +11,7 @@ if File.exist?(filename)
     baris.strip!
     next if baris.empty? || baris.start_with?('#')
     begin
-      interprener.jalankan(baris)
+      interpreter.jalankan(baris)
     rescue => e
       puts "Error di baris #{i + 1}: #{baris}"
       puts "Pesan: #{e.message}"
