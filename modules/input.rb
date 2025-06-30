@@ -1,4 +1,4 @@
-# input.rb
+# modules/input.rb
 
 module Bejana
   module FungsiInput
@@ -10,7 +10,7 @@ module Bejana
     end
 
     def ambil(kunci)
-      @data[kunci.to_sym]
+      self.ambil(kunci)
     end
   end
 end
