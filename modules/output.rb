@@ -1,4 +1,4 @@
-# output.rb
+# modules/output.rb
 
 module Bejana
   module FungsiOutput
