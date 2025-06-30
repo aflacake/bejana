@@ -1,4 +1,4 @@
-# selama.rb
+# modules/selama.rb
 
 module Bejana
   module FungsLogika
