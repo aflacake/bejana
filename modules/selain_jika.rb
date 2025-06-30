@@ -1,4 +1,4 @@
-# selain_jika.rb
+# modules/selain_jika.rb
 
 module Bejana
   module FungsiLogika
