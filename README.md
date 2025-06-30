@@ -29,9 +29,21 @@ Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan m
    atau bisa mode penuh, plugin, dan konfigurasi:
    > File plugin bawaan telah disediakan, Anda dapat menambahkan plugin lainnya dari luar dan itu boleh untuk dijalankan saja. Namun dalam menjalankan di file luar tidak memperbolehkan sebagi menyatakan bagian dari Bejana itu sendiri.
    ```bash
-   ruby main.rb
+   ruby main.rb NAMA_FILE.bjn
    ```
 
+## CLI
+Dengan antarmuka CLI, memanggil fungsionalitas `Bejana` seperti:
+- Menjalankan file `.bjn`.
+- Menyimpan atau memuat data.
+- Menampilkan variabel.
+- Menjalankan langkah dari interpreter.
+
+```ruby
+ruby bejana.rb jalankan NAMA_FILE.bjn
+```
+
+## Font-end
 Penggunaan luar seperti front-end, Anda bisa memasukkan plug-in yang sudah disediakan, bahwa plugin ini masih dalam proses pengerjakan lebih lanjut,
 Plug-in: https://cdn.jsdelivr.net/gh/aflacake/bejana@main/bejana-skrip-modul.js.
    > Terkadang pembaruan kini sedang usang dan tidak relevan, sedang membutuhkan kontribusi dari Anda? tertarik? mulai fork sekarang.
