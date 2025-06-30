@@ -1,5 +1,7 @@
 # core.rb
 
+require 'json'
+
 require_relative 'modules/input'
 require_relative 'modules/output'
 require_relative 'modules/logika'
@@ -35,6 +37,11 @@ module Bejana
 
     def tampilkan_semua
       @data.each { |k, v| puts "#{k} => #{v}" }
+    end
+
+    def simpan
+      File.write("bejana_data.json", @data.to_json)
+      puts "Data berhasil disimpan ke bejana_data.json"
     end
   end
 end
