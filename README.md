@@ -39,7 +39,7 @@ Dengan antarmuka CLI, memanggil fungsionalitas `Bejana` seperti:
 - Menampilkan variabel.
 - Menjalankan langkah dari interpreter.
 
-```ruby
+```bash
 ruby bejana.rb jalankan NAMA_FILE.bjn
 ```
 
