@@ -43,6 +43,25 @@ Dengan antarmuka CLI, memanggil fungsionalitas `Bejana` seperti:
 ruby bejana.rb jalankan NAMA_FILE.bjn
 ```
 
+## Installer
+### Linux dan MacOS
+```bash
+chmod +x installer.sh
+./installer.sh
+```
+Setelah itu jalankan:
+```bash
+bejana bantuan
+```
+
+## Windows
+1. Jalankan `installer.bat` dengan klik 2 kali atau lewat CMD.
+2. Jalankan:
+   ```bash
+   %USERPROFILE%\.bejana\bejana.cmd bantuan
+   ```
+   > Untuk akses lebih mudah, secara manual Anda bisa tambahkan `%USERPROFILE%\.bejana` ke `PATH` sistem agar bisa dijalankan dengan hanya `bejana`.
+
 ## Font-end
 Penggunaan luar seperti front-end, Anda bisa memasukkan plug-in yang sudah disediakan, bahwa plugin ini masih dalam proses pengerjakan lebih lanjut,
 Plug-in: https://cdn.jsdelivr.net/gh/aflacake/bejana@main/bejana-skrip-modul.js.
