@@ -54,7 +54,7 @@ Setelah itu jalankan:
 bejana bantuan
 ```
 
-## Windows
+### Windows
 1. Jalankan `installer.bat` dengan klik 2 kali atau lewat CMD.
 2. Jalankan:
    ```bash
