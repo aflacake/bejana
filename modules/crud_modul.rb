@@ -1,6 +1,5 @@
-# modules/crud_modul.rb
 module Bejana
-  module CrudModul
+  module FungsiCRUD
     def tambah(kunci, nilai)
       if @data.has_key?(kunci.to_sym)
         puts "Kunci #{kunci} sudah ada. Gunakan perbarui untuk mengubah nilai."
