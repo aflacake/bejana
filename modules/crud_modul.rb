@@ -1,10 +1,11 @@
+# modules/crud_modul.rb
 module Bejana
   module CrudModul
     def tambah(kunci, nilai)
       if @data.has_key?(kunci.to_sym)
         puts "Kunci #{kunci} sudah ada. Gunakan perbarui untuk mengubah nilai."
       else
-        @data[kunci.to_sym] = convert_nilai(nilai)
+        @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
         puts "Data '#{kunci}' berhasil ditambahkan dengan nilai '#{nilai}'"
       end
     end
@@ -19,7 +20,7 @@ module Bejana
 
     def perbarui(kunci, nilai)
       if @data.has_key?(kunci.to_sym)
-        @data[kunci.to_sym] = convert_nilai(nilai)
+        @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
         puts "Data '#{kunci}' berhasil diperbarui dengan nilai '#{nilai}'"
       else
         puts "Data dengan kunci '#{kunci}' tidak ditemukan."
@@ -40,16 +41,6 @@ module Bejana
       else
         puts "Isi data saat ini:"
         @data.each { |k, v| puts "#{k}: #{v}" }
-      end
-    end
-
-    private
-
-    def convert_nilai(nilai)
-      if nilai.match?(/^\d+$/)
-        nilai.to_i
-      else
-        nilai
       end
     end
   end
