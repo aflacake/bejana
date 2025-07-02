@@ -8,6 +8,7 @@ require_relative 'modules/logika'
 require_relative 'modules/selain_jika'
 require_relative 'modules/berhenti_jika'
 require_relative 'modules/environment_modul'
+require_relative 'modules/crud_modul'
 
 module Bejana
   class Wadah
@@ -17,6 +18,7 @@ module Bejana
     include Bejana::FungsiLogika::SelainJika
     include Bejana::FungsiLogika::Selama
     include Bejana::FungsiLogika::BerhentiJika
+    include Bejana::FungsiCRUD
 
     attr_reader :env, :data
 
