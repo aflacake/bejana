@@ -1,5 +1,3 @@
-# bejana_interpreter.rb
-
 require 'json'
 require_relative 'modules/navigator_modul'
 
@@ -39,12 +37,21 @@ class BejanaInterpreter
       end
     end
   end
-      
 
   private
 
   def proses(baris)
     case baris
+    when /^tambah (\w+)\s+"?(.*?)"?$/
+      tambah($1, $2)
+    when /^baca (\w+)$/
+      baca($1)
+    when /^perbarui (\w+)\s+"?(.*?)"?$/
+      perbarui($1, $2)
+    when /^hapus (\w+)$/
+      hapus($1)
+    when /^tampilkan_semua_data$/
+      tampilkan_semua_data
     when /^isi (\w+)\s+"?(.*?)"?$/
       kunci, nilai = $1, $2
       @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
@@ -58,10 +65,10 @@ class BejanaInterpreter
     when /^muat$/
       muat_dari_file
     when /^ambil semua dengan (\w+)\s*(==|!=|>=|<=|>|<|)\s*(\d+)$/
-      kunci, operator, nilai = $1.to_sym, $2, $3, nilai.to_i
+      kunci, operator, nilai = $1.to_sym, $2, $3.to_i
       cocok = @data.select do |k, v|
-        v = v.to_i if v.to_s =~ /^\d+$/
-        v.send(operator, nilai) rescue false
+        v_num = v.to_s =~ /^\d+$/ ? v.to_i : v
+        v_num.send(operator, nilai) rescue false
       end
       puts "Hasil filter:"
       cocok.each { |k, v| puts "#{k}: #{v}" }
@@ -70,16 +77,59 @@ class BejanaInterpreter
     end
   end
 
+  def tambah(kunci, nilai)
+    if @data.has_key?(kunci.to_sym)
+      puts "Kunci #{kunci} sudah ada. Gunakan perbarui untuk mengubah nilai."
+    else
+      @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+      puts "Data '#{kunci}' berhasil ditambahkan dengan nilai '#{nilai}'"
+    end
+  end
+
+  def baca(kunci)
+    if @data.has_key?(kunci.to_sym)
+      puts "#{kunci}: #{@data[kunci.to_sym]}"
+    else
+      puts "Data dengan kunci '#{kunci}' tidak ditemukan."
+    end
+  end
+
+  def perbarui(kunci, nilai)
+    if @data.has_key?(kunci.to_sym)
+      @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+      puts "Data '#{kunci}' berhasil diperbarui dengan nilai '#{nilai}'"
+    else
+      puts "Data dengan kunci '#{kunci}' tidak ditemukan."
+    end
+  end
+
+  def hapus(kunci)
+    if @data.delete(kunci.to_sym)
+      puts "Data '#{kunci}' berhasil dihapus."
+    else
+      puts "Data dengan kunci '#{kunci}' tidak ditemukan."
+    end
+  end
+
+  def tampilkan_semua_data
+    if @data.empty?
+      puts "Tidak ada data yang disimpan."
+    else
+      puts "Isi data saat ini:"
+      @data.each { |k, v| puts "#{k}: #{v}" }
+    end
+  end
+
   def simpan_ke_file(nama_file = "bejana_data.json")
-      File.write(nama_file, @data.to_json)
-      puts "Data berhasil disimpan ke #{nama_file}"
+    File.write(nama_file, @data.to_json)
+    puts "Data berhasil disimpan ke #{nama_file}"
   end
 
   def muat_dari_file(nama_file = "bejana_data.json")
     if File.exist?(nama_file)
-       json_data = JSON.parse(File.read(nama_file))
-       @data = json_data.transform_keys(&:to_sym)
-       puts "Data berhasil dimuat dari #{nama_file}"
+      json_data = JSON.parse(File.read(nama_file))
+      @data = json_data.transform_keys(&:to_sym)
+      puts "Data berhasil dimuat dari #{nama_file}"
     else
       puts "File #{nama_file} tidak ditemukan"
     end
