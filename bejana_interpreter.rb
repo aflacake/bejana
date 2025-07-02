@@ -3,7 +3,7 @@ require_relative 'modules/navigator_modul'
 require_relative 'modules/crud_modul'
 
 class BejanaInterpreter
-  include Bejana::CrudModul
+  include Bejana::FungsiCRUD
 
   def initialize
     @data = {}
