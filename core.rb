@@ -49,6 +49,8 @@ module Bejana
     def method_missing(nama_metode, *argumen, &blok)
       if argumen.length == 1
         isi(nama_metode, argumen.first)
+      elsif argumen.empty?
+        ambil(nama_metode)
       else
         super
       end
