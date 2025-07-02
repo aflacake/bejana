@@ -7,7 +7,11 @@ interpreter = BejanaInterpreter.new
 filename = ARGV[0] || 'script.bj'
 
 if File.exist?(filename)
-  File.readlines(filename).each_with_index do |baris, i|
+  kode = File.read(filename)
+  puts "Kode yang dibaca dari file #{filename}:"
+  puts kode
+
+  kode.each_line.with_index do |baris, i|
     baris.strip!
     next if baris.empty? || baris.start_with?('#')
     begin
@@ -20,3 +24,4 @@ if File.exist?(filename)
 else
   puts "File #{filename} tidak ditemukan"
 end
+
