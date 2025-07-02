@@ -1,36 +1,36 @@
-# modules/crud_modul.rb
-
 module Bejana
-  module FungsiCRUD
+  module CrudModul
     def tambah(kunci, nilai)
-      @data[kunci.to_sym] = nilai
-      puts "Data #{kunci} berhasil ditambahkan dengan nilai #{nilai}"
+      if @data.has_key?(kunci.to_sym)
+        puts "Kunci #{kunci} sudah ada. Gunakan perbarui untuk mengubah nilai."
+      else
+        @data[kunci.to_sym] = convert_nilai(nilai)
+        puts "Data '#{kunci}' berhasil ditambahkan dengan nilai '#{nilai}'"
+      end
     end
 
     def baca(kunci)
-      nilai = @data[kunci.to_sym]
-      if nilai
-        puts "#{kunci}: #{nilai}"
+      if @data.has_key?(kunci.to_sym)
+        puts "#{kunci}: #{@data[kunci.to_sym]}"
       else
-        puts "Data dengan kunci #{kunci} tidak ditemukan."
+        puts "Data dengan kunci '#{kunci}' tidak ditemukan."
       end
     end
 
     def perbarui(kunci, nilai)
-      if @data.has._key?(kunci.to_sym)
-        @data[kunci.to_sym] = nilai
-        puts "Data #{kunci} berhasil diperbarui dengan nilai #{nilai}"
+      if @data.has_key?(kunci.to_sym)
+        @data[kunci.to_sym] = convert_nilai(nilai)
+        puts "Data '#{kunci}' berhasil diperbarui dengan nilai '#{nilai}'"
       else
-        puts "Data dengan kunci #{kunci} tidak ditemukan."
+        puts "Data dengan kunci '#{kunci}' tidak ditemukan."
       end
     end
 
     def hapus(kunci)
-      if @data.has_key?(kunci.to_sym)
-        @data.delete(kunci.to_sym)
-        puts "Data #{kunci} berhasil dihapus."
+      if @data.delete(kunci.to_sym)
+        puts "Data '#{kunci}' berhasil dihapus."
       else
-        puts "Data dengan kunci #{kunci} tidak ditemukan."
+        puts "Data dengan kunci '#{kunci}' tidak ditemukan."
       end
     end
 
@@ -38,22 +38,18 @@ module Bejana
       if @data.empty?
         puts "Tidak ada data yang disimpan."
       else
+        puts "Isi data saat ini:"
         @data.each { |k, v| puts "#{k}: #{v}" }
       end
     end
 
-    def simpan_data(nama_file = "bejana_data.json")
-      File.write(nama_file, @data.to_json)
-      puts "Data berhasil tersimpan ke #{nama_file}"
-    end
+    private
 
-    def muat_data(nama_file = "bejana_data.json")
-      if File.exist?(nama_file)
-        json_data = JSON.parse(File.read(nama_file))
-        @data = json_data.transform_keys(&:to_sym)
-        puts "Data berhasil dimuat dari #{nama_file}"
+    def convert_nilai(nilai)
+      if nilai.match?(/^\d+$/)
+        nilai.to_i
       else
-        puts "File #{nama_file} tidak ditemukan."
+        nilai
       end
     end
   end
