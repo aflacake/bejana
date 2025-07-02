@@ -45,5 +45,17 @@ module Bejana
       File.write("bejana_data.json", @data.to_json)
       puts "Data berhasil disimpan ke bejana_data.json"
     end
+
+    def method_missing(nama_metode, *argumen, &blok)
+      if argumen.length == 1
+        isi(nama_metode, argumen.first)
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      true
+    end
   end
 end
