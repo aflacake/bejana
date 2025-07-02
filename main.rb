@@ -42,6 +42,8 @@ kode = File.read(bjn_file)
 
 case File.extname(bjn_file)
 when ".bjn"
+  puts "Menjalankan kode Bejana:"
+  puts kode
   BejanaApp.new { eval(kode) }
 when ".earl"
   puts "Menjalankan file .earl: #{bjn_file}"
