@@ -7,13 +7,18 @@ require_relative 'modules/crud_modul'
 class BejanaInterpreter
   include Bejana::FungsiCRUD
 
-  def initialize
+  def initialize(mode_pelacakan: false)
     @data = {}
     @in_block = false
     @block_lines = []
     @navigator = Bejana::NavigatorModul::Navigator.new(self)
     @logger = Logger.new("bejana.log", "daily")
-    @logger.level = Logger::INFO
+    if mode_pelacakan
+      @logger.level = Logger::DEBUG
+      puts "Mode pelacakan diaktifkan."
+    else
+      @logger.level = Logger::INFO
+    end
   end
 
   def jalankan(baris)
