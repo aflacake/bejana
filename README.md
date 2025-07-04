@@ -27,10 +27,16 @@ Buat file ekstensi dengan `.bjn` untuk mencari kode yang ingin di eksekusi dan m
    ruby jalankan_bejana.rb NAMA_FILE.bjn
    ```
    atau bisa mode penuh, plugin, dan konfigurasi:
-   > File plugin bawaan telah disediakan, Anda dapat menambahkan plugin lainnya dari luar dan itu boleh untuk dijalankan saja. Namun dalam menjalankan di file luar tidak memperbolehkan sebagi menyatakan bagian dari Bejana itu sendiri.
+   > File plugin bawaan telah disediakan, Anda dapat menambahkan plugin lainnya dari luar dan itu boleh untuk dijalankan saja. Namun dalam menjalankan di file luar tidak memperbolehkan sebagai menyatakan bagian dari Bejana itu sendiri.
    ```bash
    ruby main.rb NAMA_FILE.bjn
    ```
+
+Jangan lupa instal paket dari pihak ketiga untuk bahan Bejana:
+- Menambahkan gem Sinatra untuk fitur API atau antarmuka eksternal agar bisa diakses dari luar misalnya dari frontend-web, aplikasi lain, dan cURL.
+  ```bash
+  gem install sinatra
+  ```
 
 ## CLI
 Dengan antarmuka CLI, memanggil fungsionalitas `Bejana` seperti:
