@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'json'
+require 'securerandom'
 
 require_relative 'bejana_interpreter'
 
@@ -9,6 +10,17 @@ interpreter = BejanaInterpreter.new
 
 set :port, 4567
 set :bind, '0.0.0.0'
+
+VALID_API_TOKEN = "secret_api_token_123"
+
+before do
+  token = request.env["HTTP_AUTORIZATION"]&.split(' ')&.last
+
+  unless token && token == VALID_API_TOKEN
+    status 403
+    return { status: "error", pesan: "Token API tidak valid atau tidak ditemukan." }.to_json
+  end
+end
 
 VALID_COMMANDS = [
   /^tambah \w+ "?[^"]*"?$/,
