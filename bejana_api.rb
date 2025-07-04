@@ -3,12 +3,12 @@
 require 'sinatra'
 require 'json'
 
-require_ relative 'bejana_interpreter'
+require_relative 'bejana_interpreter'
 
 interpreter = BejanaInterpreter.new
 
 set :port, 4567
-set, :bind, '0.0.0.0'
+set :bind, '0.0.0.0'
 
 VALID_COMMANDS = [
   /^tambah \w+ "?[^"]*"?$/,
@@ -50,7 +50,7 @@ post '/jalankan' do
   end
 end
 
-get ' /data' do
+get '/data' do
   content_type :json
   interpreter.instance_variable_get(:@data).to_json
 end
@@ -60,13 +60,14 @@ post '/isi' do
   input = JSON.parse(request.body.read)
   kunci = input["kunci"]
   nilai = input["nilai"]
-  interpreter.jalankan("isi #{kunci} \"#{nilai}\"")
-  { status: "ok", data: interpreter.instance_variable_get(:@data) }.to_json
 
   unless kunci =~ /^\w+$/ && nilai.is_a?(String) || nilai.is_a?(Numeric)
     status 400
     return { status: "error", pesan: "Kunci atau nilai tidak valid" }.to json
   end
+
+  interpreter.jalankan("isi #{kunci} \"#{nilai}\"")
+  { status: "ok", data: interpreter.instance_variable_get(:@data) }.to_json
 end
 
 post '/cari' do
