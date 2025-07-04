@@ -31,6 +31,10 @@ def perintah_valid?(baris)
   VALID_COMMANDS.any? { |regex| baris.strip.match(regex) }
 end
 
+def simpan_data_automatis
+  interpreter.simpan_ke_file
+end
+
 post '/jalankan' do
   content_type :json
   body = JSON.parse(request.body.read)
@@ -43,6 +47,8 @@ post '/jalankan' do
 
   begin
     hasil = interpreter.jalankan(baris)
+
+    simpan_data_automatis
     { status: "ok", hasil: hasil }.to_json
   rescue => e
     status 500
@@ -67,6 +73,8 @@ post '/isi' do
   end
 
   interpreter.jalankan("isi #{kunci} \"#{nilai}\"")
+
+  simpan_data_automatis
   { status: "ok", data: interpreter.instance_variable_get(:@data) }.to_json
 end
 
