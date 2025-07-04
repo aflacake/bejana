@@ -15,6 +15,7 @@ VALID_API_TOKEN = "secret_api_token_123"
 
 before do
   token = request.env["HTTP_AUTORIZATION"]&.split(' ')&.last
+  halt 401, { status: "error", pesan "Unauthorized: Token tidak ditemukan atau salah" }.to_json unless token && API_TOKENS.include?(token)
 
   unless token && token == VALID_API_TOKEN
     status 403
