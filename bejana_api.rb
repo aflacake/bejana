@@ -10,16 +10,42 @@ interpreter = BejanaInterpreter.new
 set :port, 4567
 set, :bind, '0.0.0.0'
 
+VALID_COMMANDS = [
+  /^tambah \w+ "?[^"]*"?$/,
+  /^baca \w+$/,
+  /^perbarui \w+ "?[^"]*"?$/,
+  /^hapus \w+$/,
+  /^isi \w+ "?[^"]*"?$/,
+  /^cetak ".*?"$/,
+  /^lanjut ke \w+$/,
+  /^tampilkan_semua_data$/,
+  /^simpan$/,
+  /^muat$/,
+  /^ambil semua dengan \w+ *(==|!=|>=|<=|>|<) *\d+$/,
+  /^langkah \w+$/,
+  /^selesai$/,
+  /^mulai_dari \w+$/
+]
+
+def perintah_valid?(baris)
+  VALID_COMMANDS.any? { |regex| baris.strip.match(regex) }
+end
+
 post '/jalankan' do
   content_type :json
   body = JSON.parse(request.body.read)
   baris = body["baris"]
 
+  unless perintah_valid?(baris)
+    status 400
+    return { status: "error", pesan: "Perintah tidak valid: #{baris}" }.to_json
+  end
+
   begin
     hasil = interpreter.jalankan(baris)
     { status: "ok", hasil: hasil }.to_json
   rescue => e
-    status 400
+    status 500
     { status: "error", pesan: e.message }.to_json
   end
 end
@@ -36,6 +62,11 @@ post '/isi' do
   nilai = input["nilai"]
   interpreter.jalankan("isi #{kunci} \"#{nilai}\"")
   { status: "ok", data: interpreter.instance_variable_get(:@data) }.to_json
+
+  unless kunci =~ /^\w+$/ && nilai.is_a?(String) || nilai.is_a?(Numeric)
+    status 400
+    return { status: "error", pesan: "Kunci atau nilai tidak valid" }.to json
+  end
 end
 
 post '/cari' do
