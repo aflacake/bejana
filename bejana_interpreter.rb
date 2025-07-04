@@ -22,6 +22,7 @@ class BejanaInterpreter
   end
 
   def jalankan(baris)
+    return if baris.strip.start_with?('#')
     @logger.debug("Memulai eksekusi: #{baris}")
 
     case baris
@@ -59,6 +60,21 @@ class BejanaInterpreter
     raise e
   end
 
+  def cari_data_pola(pola)
+    hasil = @data.select { |k, v| v.to_s.match(/#{pola}/) }
+    puts "Hasil pencarian pola '#{pola}':"
+    hasil.each { |k, v| puts "#{k}: #{v}" }
+    @logger.info("Pencarian pola: #{pola} => #{hasil.inspect}")
+  end
+
+  def sortir_data(kunci, urutan = "asc")
+    cocok = @data.sort_by { |k ,v| v.to_s }
+    cocok = urutan == "desc" ? cocok.reverse : cocok
+    puts "Data setelah diurutkan:"
+    cocok.each { |k, v| puts "#{k}: #{v}" }
+    @logger.info("Data diurutkan berdasarkan #{kunci} #{urutan}")
+  end
+
   private
 
   def proses(baris)
@@ -83,7 +99,14 @@ class BejanaInterpreter
       @logger.info("Menampilkan semua data.")
     when /^isi (\w+)\s+"?(.*?)"?$/
       kunci, nilai = $1, $2
-      @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+
+      nilai_parsed = case nilai
+                     when /^\d+$/ then nilai.to_i
+                     when /^(true|false)$/i then nilai.downcase == "true"
+                     else nilai
+                     end
+
+      @data[kunci.to_sym] = nilai_parsed
       @logger.info("Set variabel: #{kunci} => #{@data[kunci.to_sym].inspect}")
     when /^cetak "(.*?)"$/
       teks = $1.gsub(/{{(.*?)}}/) { @data[$1.strip.to_sym] }
@@ -98,13 +121,14 @@ class BejanaInterpreter
       muat_dari_file
     when /^ambil semua dengan (\w+)\s*(==|!=|>=|<=|>|<|)\s*(\d+)$/
       kunci, operator, nilai = $1.to_sym, $2, $3.to_i
-      cocok = @data.select do |k, v|
-        v_num = v.to_s =~ /^\d+$/ ? v.to_i : v
-        v_num.send(operator, nilai) rescue false
-      end
-      puts "Hasil filter:"
-      cocok.each { |k, v| puts "#{k}: #{v}" }
-      @logger.info("Filter data: #{kunci} #{operator} #{nilai} => #{cocok.inspect}")
+      filter_data(kunci, operator, nilai)
+    when /^cari "(.*?)"$/
+      pola = $1
+      cari_data_pola(pola)
+    when /^sortir_data (\w+)(?: (asc|desc))?$/
+      kunci = $1
+      urutan = $2 || "asc"
+      sortir_data(kunci, urutan)
     else
       @logger.warn("Perintah tidak dikenali: #{baris}")
       puts "Perintah tidak dikenali: #{baris}"
@@ -127,4 +151,31 @@ class BejanaInterpreter
       puts "File #{nama_file} tidak ditemukan"
       @logger.warn("Gagal muat data, file tidak ditemukan: #{nama_file}")
     end
+  end
+
+  def filter_data(kunci, operator, nilai, kondisi = nil)
+    cocok = @data.select do |k, v|
+    v_num = case v
+            when TrueClass, FalseClass then v ? 1 : 0
+            when String then v.to_i rescue v
+            else v.to_s =~ /^\d+$/ ? v.to_i : v
+            end
+      case operator
+      when '==' then v_num == nilai
+      when '!=' then v_num != nilai
+      when '>'  then v_num > nilai
+      when '<'  then v_num < nilai
+      when '>=' then v_num >= nilai
+      when '<=' then v_num <= nilai
+      else false
+      end
+    end
+
+    if kondisi
+      cocok = cocok.select { |k, v| v.to_s.include?(kondisi) }
+    end
+
+    puts "Hasil filter:"
+    cocok.each { |k, v| puts "#{k}: #{v}" }
+    @logger.info("Filter data: #{kunci} #{operator} #{nilai} => #{cocok.inspect}")
   end
