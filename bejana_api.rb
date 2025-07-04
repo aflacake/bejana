@@ -2,26 +2,14 @@
 
 require 'sinatra'
 require 'json'
-require 'securerandom'
 
 require_relative 'bejana_interpreter'
+require_relative 'manajer_pengguna'
 
 interpreter = BejanaInterpreter.new
 
 set :port, 4567
 set :bind, '0.0.0.0'
-
-VALID_API_TOKEN = "secret_api_token_123"
-
-before do
-  token = request.env["HTTP_AUTORIZATION"]&.split(' ')&.last
-  halt 401, { status: "error", pesan "Unauthorized: Token tidak ditemukan atau salah" }.to_json unless token && API_TOKENS.include?(token)
-
-  unless token && token == VALID_API_TOKEN
-    status 403
-    return { status: "error", pesan: "Token API tidak valid atau tidak ditemukan." }.to_json
-  end
-end
 
 VALID_COMMANDS = [
   /^tambah \w+ "?[^"]*"?$/,
@@ -40,12 +28,20 @@ VALID_COMMANDS = [
   /^mulai_dari \w+$/
 ]
 
+before do
+  # Cek token di header Authorization: Bearer TOKEN
+  token = request.env["HTTP_AUTHORIZATION"]&.split(' ')&.last
+  unless token && UserManager.find_user_by_token(token)
+    halt 401, { status: "error", pesan: "Unauthorized: Token tidak ditemukan atau salah" }.to_json
+  end
+end
+
 def perintah_valid?(baris)
   VALID_COMMANDS.any? { |regex| baris.strip.match(regex) }
 end
 
 def simpan_data_automatis
-  interpreter.simpan_ke_file
+  interpreter.send(:simpan_ke_file)
 end
 
 post '/jalankan' do
@@ -60,7 +56,6 @@ post '/jalankan' do
 
   begin
     hasil = interpreter.jalankan(baris)
-
     simpan_data_automatis
     { status: "ok", hasil: hasil }.to_json
   rescue => e
@@ -80,13 +75,12 @@ post '/isi' do
   kunci = input["kunci"]
   nilai = input["nilai"]
 
-  unless kunci =~ /^\w+$/ && nilai.is_a?(String) || nilai.is_a?(Numeric)
+  unless kunci =~ /^\w+$/ && (nilai.is_a?(String) || nilai.is_a?(Numeric))
     status 400
-    return { status: "error", pesan: "Kunci atau nilai tidak valid" }.to json
+    return { status: "error", pesan: "Kunci atau nilai tidak valid" }.to_json
   end
 
   interpreter.jalankan("isi #{kunci} \"#{nilai}\"")
-
   simpan_data_automatis
   { status: "ok", data: interpreter.instance_variable_get(:@data) }.to_json
 end
@@ -97,4 +91,23 @@ post '/cari' do
   pola = input["pola"]
   hasil = interpreter.instance_variable_get(:@data).select { |k, v| v.to_s.match(/#{pola}/) }
   { hasil: hasil }.to_json
+end
+
+get '/users' do
+  content_type :json
+  UserManager.list_users.to_json
+end
+
+post '/generate_token' do
+  content_type :json
+  input = JSON.parse(request.body.read)
+  username = input["username"]
+
+  unless username =~ /^\w+$/
+    status 400
+    return { status: "error", pesan: "Username tidak valid" }.to_json
+  end
+
+  token = UserManager.generate_token_for(username)
+  { status: "ok", username: username, token: token }.to_json
 end
