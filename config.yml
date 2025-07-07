@@ -3,3 +3,5 @@
 plugins:
  - proses_data_modul
  - visualisasi_modul
+
+simpan_otomatis: true
