@@ -65,5 +65,17 @@ module Bejana
     def respond_to_missing?(method_name, include_private = false)
       true
     end
+
+    def muat_dari_backup(nama_file)
+      path = File.join("cadangkan", nama_file)
+      if File.exist?(path)
+        json_data = JSON.parse(File.read(path))
+        @data = json_data.transform_keys(&:to_sym)
+        puts "Data berhasil dimuat dari cadangkan #{nama_file}"
+        @logger.info("Data dimuat dari cadangkan: #{nama_file}")
+      else
+        puts "Cadangkan #{nama_file} tidak ditemukan"
+      end
+    end
   end
 end
