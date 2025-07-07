@@ -29,6 +29,14 @@ when "muat_cadangkan"
   else
     pust "Harap sertakan nama file cadangkan"
   end
+when "daftar_cadangkan"
+  backups = Dir.glob("cadangkan/*.json")
+  if backups.empty?
+    puts "Tidak ada cadangkan yang tersedia"
+  else
+    puts "Daftar cadangkan yang tersedia:"
+    backups.each { |f| puts "- #{f}" }
+  end
 when "bantuan"
   puts <<~HELP
     Perintah CLI Bejana:
