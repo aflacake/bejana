@@ -1,5 +1,7 @@
 # modules/crud_modul.rb
 
+require 'json'
+
 module Bejana
   module FungsiCRUD
     def catat_perubahan(kunci, lama, baru)
@@ -13,10 +15,13 @@ module Bejana
     end
 
     def tambah(kunci, nilai)
-      if @data.has_key?(kunci.to_sym)
+      kunci_sym = kunci.to_sym
+      if @data.has_key?(kunci_sym)
         puts "Kunci #{kunci} sudah ada. Gunakan perbarui untuk mengubah nilai."
       else
-        @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+        nilai_diparsing = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+        @data[kunci_sym] = nilai_diparsing
+        catat_perubahan(kunci, nil, nilai_diparsing)
         puts "Data '#{kunci}' berhasil ditambahkan dengan nilai '#{nilai}'"
       end
     end
@@ -30,8 +35,12 @@ module Bejana
     end
 
     def perbarui(kunci, nilai)
-      if @data.has_key?(kunci.to_sym)
-        @data[kunci.to_sym] = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+      kunci_sym = kunci.to_sym
+      if @data.has_key?(kunci_sym)
+        lama = @data[kunci_sym]
+        nilai_diparsing = nilai.match(/^\d+$/) ? nilai.to_i : nilai
+        @data[kunci_sym] = nilai_diparsing
+        catat_perubahan(kunci, lama, nilai_diparsing)
         puts "Data '#{kunci}' berhasil diperbarui dengan nilai '#{nilai}'"
       else
         puts "Data dengan kunci '#{kunci}' tidak ditemukan."
@@ -39,7 +48,11 @@ module Bejana
     end
 
     def hapus(kunci)
-      if @data.delete(kunci.to_sym)
+      kunci_sym = kunci.to_sym
+      if @data.has_key?(kunci_sym)
+        lama = @data[kunci_sym]
+        @data.delete(kunci_sym)
+        catat_perubahan(kunci, lama, nil)
         puts "Data '#{kunci}' berhasil dihapus."
       else
         puts "Data dengan kunci '#{kunci}' tidak ditemukan."
@@ -56,3 +69,4 @@ module Bejana
     end
   end
 end
+
