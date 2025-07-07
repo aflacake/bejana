@@ -107,9 +107,9 @@ post '/generate_token' do
   input = JSON.parse(request.body.read)
   username = input["username"]
 
-  unless username =~ /^\w+$/
+  unless username =~ /^[a-zA-Z0-9_]{3,20}$/
     status 400
-    return { status: "error", pesan: "Username tidak valid" }.to_json
+    return { status: "error", pesan: "Username tidak valid. Gunakan 3-20 karakter huruf, angka, atau underscore." }.to_json
   end
 
   token = UserManager.generate_token_for(username)
