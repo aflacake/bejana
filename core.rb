@@ -66,7 +66,7 @@ module Bejana
       true
     end
 
-    def muat_dari_backup(nama_file)
+    def muat_dari_cadangkan(nama_file)
       path = File.join("cadangkan", nama_file)
       if File.exist?(path)
         json_data = JSON.parse(File.read(path))
