@@ -1,5 +1,17 @@
+# modules/crud_modul.rb
+
 module Bejana
   module FungsiCRUD
+    def catat_perubahan(kunci, lama, baru)
+      perubahan = {
+        waktu: Time.now,
+        kunci: kunci,
+        sebelum: lama,
+        sesudah: baru,
+      }
+      File.open("riwayat_perubahan.json", "a") { |f| f.puts perubahan.to_json }
+    end
+
     def tambah(kunci, nilai)
       if @data.has_key?(kunci.to_sym)
         puts "Kunci #{kunci} sudah ada. Gunakan perbarui untuk mengubah nilai."
