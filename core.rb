@@ -1,6 +1,7 @@
 # core.rb
 
 require 'json'
+require 'fileutils'
 
 require_relative 'modules/input'
 require_relative 'modules/output'
@@ -42,6 +43,11 @@ module Bejana
     end
 
     def simpan
+      if File.exist?("bejana_data.json")
+        timestamp = Time.now.sfrftime("%Y%m%d_%H%M%S")
+        FileUtils.cp("bejana_data.json", "cadangkan/bejana_data_#{timestamp}.json")
+      end
+
       File.write("bejana_data.json", @data.to_json)
       puts "Data berhasil disimpan ke bejana_data.json"
     end
