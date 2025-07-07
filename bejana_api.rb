@@ -45,6 +45,8 @@ def simpan_data_automatis
 end
 
 post '/jalankan' do
+  require_role("admin")
+
   content_type :json
   body = JSON.parse(request.body.read)
   baris = body["baris"]
@@ -70,6 +72,8 @@ get '/data' do
 end
 
 post '/isi' do
+  require_role("admin", "editor")
+
   content_type :json
   input = JSON.parse(request.body.read)
   kunci = input["kunci"]
@@ -110,4 +114,17 @@ post '/generate_token' do
 
   token = UserManager.generate_token_for(username)
   { status: "ok", username: username, token: token }.to_json
+end
+
+helpers do
+  def current_user
+    token = request.env["HTTP_AUTHORIZATION"]&.split(' ')&.last
+    UserManager.find_user_by_token(token)
+  end
+
+  def require_role(*roles)
+    unless current_user && roles.include?(current_user["role"])
+      halt 403, { status: "error", pesan: "Dilarang: Akses ditolak" }.to_json
+    end
+  end
 end
