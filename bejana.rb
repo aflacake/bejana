@@ -22,6 +22,13 @@ when "muat"
 when "hapus_data"
   File.delete("bejana_data.json") if File.exist?("bejana_data.json")
   puts "Data yang disimpan dihapus"
+when "muat_cadangkan"
+  backup_file = ARGV[2]
+  if backup_file
+    interpreter.muat_dari_cadangkan(backup_file)
+  else
+    pust "Harap sertakan nama file cadangkan"
+  end
 when "bantuan"
   puts <<~HELP
     Perintah CLI Bejana:
