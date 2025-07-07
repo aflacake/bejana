@@ -2,6 +2,7 @@
 
 require 'json'
 require 'logger'
+require 'yaml'
 
 require_relative 'modules/navigator_modul'
 require_relative 'modules/crud_modul'
@@ -10,6 +11,9 @@ class BejanaInterpreter
   include Bejana::FungsiCRUD
 
   def initialize(mode_pelacakan: false)
+    config = YAML.load_file('config.yaml') rescue {}
+    @simpan_otomatis = config["simpan_otomatis"] != false
+
     @data = {}
     @in_block = false
     @block_lines = []
@@ -26,6 +30,8 @@ class BejanaInterpreter
   def jalankan(baris)
     return if baris.strip.start_with?('#')
     @logger.debug("Memulai eksekusi: #{baris}")
+
+    simpan_ke_file if @simpan otomatis
 
     case baris
     when /^langkah (\w+)$/
