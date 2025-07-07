@@ -4,7 +4,7 @@ require 'json'
 require 'securerandom'
 
 module UserManager
-  USERS_FILE = "users.json"
+  USERS_FILE = "pengguna.json"
 
   def self.load_users
     if File.exist?(USERS_FILE)
@@ -41,5 +41,15 @@ module UserManager
 
   def self.list_users
     load_users["users"].map { |u| { username: u["username"], token: u["token"] } }
+  end
+
+  def self.find_user_by_token(token)
+    data = load_user
+    data["users"].find { |u| u["token"] == token }
+  end
+
+  def self.user_role(token)
+    user = find_user_by_token(token)
+    user ? user["role"] : nil
   end
 end
