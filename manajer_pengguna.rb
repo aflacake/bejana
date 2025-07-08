@@ -1,5 +1,3 @@
-# manajer_pengguna.rb
-
 require 'json'
 require 'securerandom'
 
@@ -23,13 +21,15 @@ module UserManager
     data["users"].find { |u| u["token"] == token }
   end
 
-  def self.generate_token_for(username)
+  def self.generate_token_for(username, role = "user")
     data = load_users
     user = data["users"].find { |u| u["username"] == username }
 
     if user.nil?
-      user = { "username" => username }
+      user = { "username" => username, "role" => role }
       data["users"] << user
+    else
+      user["role"] = role if role
     end
 
     new_token = SecureRandom.hex(16)
@@ -40,16 +40,16 @@ module UserManager
   end
 
   def self.list_users
-    load_users["users"].map { |u| { username: u["username"], token: u["token"] } }
-  end
-
-  def self.find_user_by_token(token)
-    data = load_user
-    data["users"].find { |u| u["token"] == token }
+    load_users["users"].map { |u| { username: u["username"], role: u["role"], token: u["token"] } }
   end
 
   def self.user_role(token)
     user = find_user_by_token(token)
     user ? user["role"] : nil
+  end
+
+  def self.find_user_by_username(username)
+    data = load_users
+    data["users"].find { |u| u["username"] == username }
   end
 end
