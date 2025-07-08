@@ -106,14 +106,16 @@ post '/generate_token' do
   content_type :json
   input = JSON.parse(request.body.read)
   username = input["username"]
+  role = input["role"] || "user"
 
-  unless username =~ /^[a-zA-Z0-9_]{3,20}$/
+  unless username =~ /^[a-zA-Z0-9_]{3,20}$/ &&
+        %w[admin editor user].include?(role)
     status 400
-    return { status: "error", pesan: "Username tidak valid. Gunakan 3-20 karakter huruf, angka, atau underscore." }.to_json
+    return { status: "error", pesan: "Nama pengguna atau peran tidak valid. Peran harus salah satu: admin, editor, user." }.to_json
   end
 
-  token = UserManager.generate_token_for(username)
-  { status: "ok", username: username, token: token }.to_json
+  token = UserManager.generate_token_for(username, role)
+  { status: "ok", username: username, role: role, token: token }.to_json
 end
 
 helpers do
