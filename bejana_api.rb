@@ -121,11 +121,12 @@ end
 helpers do
   def current_user
     token = request.env["HTTP_AUTHORIZATION"]&.split(' ')&.last
-    UserManager.find_user_by_token(token)
+    user = UserManager.find_user_by_token(token)
+    user ? user.merge(token: token) : nil
   end
 
   def require_role(*roles)
-    unless current_user && roles.include?(current_user["role"])
+    unless current_user && roles.include?(current_user[:role])
       halt 403, { status: "error", pesan: "Dilarang: Akses ditolak" }.to_json
     end
   end
