@@ -38,6 +38,11 @@ Jangan lupa instal paket dari pihak ketiga untuk bahan Bejana:
   gem install sinatra
   ```
 
+- gem JWT untuk token otentikasi dan otorisasi.
+  ```
+  gem install jwt
+  ```
+
 ## CLI
 Dengan antarmuka CLI, memanggil fungsionalitas `Bejana` seperti:
 - Menjalankan file `.bjn`.
