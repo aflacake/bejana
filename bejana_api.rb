@@ -5,6 +5,7 @@ require 'json'
 
 require_relative 'bejana_interpreter'
 require_relative 'manajer_pengguna'
+require_relative 'jwt_helper'
 
 interpreter = BejanaInterpreter.new
 
@@ -29,10 +30,9 @@ VALID_COMMANDS = [
 ]
 
 before do
-  # Cek token di header Authorization: Bearer TOKEN
   token = request.env["HTTP_AUTHORIZATION"]&.split(' ')&.last
-  unless token && UserManager.find_user_by_token(token)
-    halt 401, { status: "error", pesan: "Unauthorized: Token tidak ditemukan atau salah" }.to_json
+  unless token && JWTHelper.valid_token?(token)
+    halt 401, { status: "error", pesan: "Tidak sah: Token tidak ditemukan atau salah" }.to_json
   end
 end
 
@@ -59,7 +59,7 @@ post '/jalankan' do
   begin
     hasil = interpreter.jalankan(baris)
     simpan_data_automatis
-    { status: "ok", hasil: hasil }.to_json
+    { status: "oke", hasil: hasil }.to_json
   rescue => e
     status 500
     { status: "error", pesan: e.message }.to_json
@@ -86,7 +86,7 @@ post '/isi' do
 
   interpreter.jalankan("isi #{kunci} \"#{nilai}\"")
   simpan_data_automatis
-  { status: "ok", data: interpreter.instance_variable_get(:@data) }.to_json
+  { status: "oke", data: interpreter.instance_variable_get(:@data) }.to_json
 end
 
 post '/cari' do
@@ -97,12 +97,7 @@ post '/cari' do
   { hasil: hasil }.to_json
 end
 
-get '/users' do
-  content_type :json
-  UserManager.list_users.to_json
-end
-
-post '/generate_token' do
+post '/menghasilkan_token' do
   content_type :json
   input = JSON.parse(request.body.read)
   username = input["username"]
@@ -114,15 +109,15 @@ post '/generate_token' do
     return { status: "error", pesan: "Nama pengguna atau peran tidak valid. Peran harus salah satu: admin, editor, user." }.to_json
   end
 
-  token = UserManager.generate_token_for(username, role)
-  { status: "ok", username: username, role: role, token: token }.to_json
+  token = JWTHelper.encode({ username: username, role: role })
+  { status: "oke", username: username, role: role, token: token }.to_json
 end
 
 helpers do
   def current_user
     token = request.env["HTTP_AUTHORIZATION"]&.split(' ')&.last
-    user = UserManager.find_user_by_token(token)
-    user ? user.merge(token: token) : nil
+    decoded_token = JWTHelper.decode(token)
+    decoded_token ? decoded_token["username"] : nil
   end
 
   def require_role(*roles)
