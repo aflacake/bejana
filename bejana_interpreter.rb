@@ -6,6 +6,7 @@ require 'yaml'
 
 require_relative 'modules/navigator_modul'
 require_relative 'modules/crud_modul'
+require_relative 'errors'
 
 class BejanaInterpreter
   include Bejana::FungsiCRUD
