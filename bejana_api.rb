@@ -37,6 +37,8 @@ before do
 end
 
 def perintah_valid?(baris)
+  return false if baris.nil? || baris.strip.empty?
+
   VALID_COMMANDS.any? { |regex| baris.strip.match(regex) }
 end
 
