@@ -10,6 +10,7 @@ require_relative 'modules/selain_jika'
 require_relative 'modules/berhenti_jika'
 require_relative 'modules/environment_modul'
 require_relative 'modules/crud_modul'
+require_relative 'modules/manajemen_versi'
 
 module Bejana
   class Wadah
@@ -20,18 +21,46 @@ module Bejana
     include Bejana::FungsiLogika::Selama
     include Bejana::FungsiLogika::BerhentiJika
     include Bejana::FungsiCRUD
+    include Bejana::ManajemenVersi
 
     attr_reader :env, :data
 
     def initialize(&block)
       @env = Bejana::EnvironmentModul::Environment.new
       @data = {}
+      inisialisasi_versi
+      simpan_versi(@data)
       instance_eval(&block) if block_given?
     end
 
     def isi(kunci, nilai)
       @data[kunci.to_sym] = nilai
       @env.set(kunci, nilai)
+      simpan_versi(@data)
+    end
+
+    def urungkan_perubahan
+      hasil = undo
+      if hasil
+        @data = hasil
+        @env.clear
+        @data.each { |k, v| @env.set(k, v) }
+        puts "Undo berhasil."
+      else
+        puts "Tidak ada versi sebelumnya untuk undo."
+      end
+    end
+
+    def ulangi_perubahan
+      hasil = redo
+      if hasil
+        @data = hasil
+        @env.clear
+        @data.each { |k, v| @env.set(k, v) }
+        puts "Redo berhasil."
+      else
+        puts "Tidak ada versi berikutnya untuk redo."
+      end
     end
 
     def ambil(kunci)
