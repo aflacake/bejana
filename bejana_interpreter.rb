@@ -29,10 +29,23 @@ class BejanaInterpreter
   end
 
   def jalankan(baris)
-    return if baris.strip.start_with?('#')
-    @logger.debug("Memulai eksekusi: #{baris}")
+    raise ValidationError, "Baris kosong" if baris.strip.empty?
 
-    simpan_ke_file if @simpan otomatis
+    unless perintah_valid?(baris)
+      raise ValidationError, "Perintah tidak dikenali atau format salah: #{baris}"
+    end
+
+    hasil = proses(baris)
+    simpan_ke_file if @simpan_otomatis
+    hasil
+
+  rescue ValidationError => e
+    @logger.warn("Validasi gagal: #{e.message}")
+    puts "Error validasi: #{e.message}"
+  rescue StandardError => e
+    @logger.error("Eksekusi gagal: #{e.message}\n#{e.backtrace.join("\n")}")
+    puts "Error eksekusi: #{e.message}"
+  end
 
     case baris
     when /^langkah (\w+)$/
