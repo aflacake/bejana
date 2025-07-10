@@ -78,7 +78,7 @@ class BejanaInterpreter
       end
     end
   rescue => e
-    @logger.error("Terjadi kesalahan pada perintah '#{baris}': #{e.message}")
+    @logger.error("Error saat jalankan '#{baris}': #{e.message}\n#{e.backrace.join("\n")}")
     raise e
   end
 
