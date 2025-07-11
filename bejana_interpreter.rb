@@ -4,6 +4,8 @@ require 'json'
 require 'logger'
 require 'yaml'
 require 'csv'
+require 'axlsx'
+require 'roo'
 
 require_relative 'modules/navigator_modul'
 require_relative 'modules/crud_modul'
@@ -152,6 +154,41 @@ class BejanaInterpreter
     end
   end
 
+  def ekspor_ke_excel(file = "ekspor_data.xlsx")
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Data") do |sheet|
+      sheet.add_row ["Kunci", "Nilai"]
+      @data.each do |k, v|
+        sheet.add_row [k.to_s, v.to_s]
+      end
+    end
+
+    package.serialize(file)
+    puts "Data berhasil diekspor ke #{file}"
+    @logger.info("Data diekspor ke #{file}")
+  end
+
+  def impor_dari_excel(file)
+    unless File.exist?(file)
+      puts "File tidak ditemukan: #{file}"
+      return
+    end
+
+    xlsx = Roo::Spreadsheet.open(file)
+    sheet = xlsx.sheet(0)
+
+    sheet.each_with_index do |row, index|
+      next if index == 0
+      kunci, nilai = row
+      @data[kunci.to_sym] = nilai
+    end
+
+    puts "Data berhasil diimpor dari #{file}"
+    @logger.info("Data diimpor dari Excel: #{file}")
+  end
+
   private
 
   def proses(baris)
@@ -222,6 +259,12 @@ class BejanaInterpreter
       else
         puts "File tidak ditemukan: #{file}"
       end
+    when /^ekspor_excel(?: (\S+\.xlsx))?$/
+      file = $1 || "exkpor_data.xlsx"
+      ekspor_ke_excel(file)
+    when /^impor_excel (\S+\.xlsx)$/
+      file = $1
+      impor_dari_exxel(file)
     else
       @logger.warn("Perintah tidak dikenali: #{baris}")
       puts "Perintah tidak dikenali: #{baris}"
