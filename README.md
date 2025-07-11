@@ -37,10 +37,17 @@ Jangan lupa instal paket dari pihak ketiga untuk bahan Bejana:
   ```bash
   gem install sinatra
   ```
-
 - gem JWT untuk token otentikasi dan otorisasi.
-  ```
+  ```bash
   gem install jwt
+  ```
+- gem rubyXL atau axlsx untuk ekspor dalam bentuk format excel.
+  ```bash
+  gem install axlsx
+  ```
+- gem roo untuk impor dalam bentuk format excel.
+  ```bash
+  gem install roo
   ```
 
 ## CLI
