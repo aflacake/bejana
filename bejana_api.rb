@@ -4,6 +4,7 @@ require 'sinatra'
 require 'json'
 require 'axlsx'
 require 'roo'
+require 'csv'
 
 require_relative 'bejana_interpreter'
 require_relative 'manajer_pengguna'
@@ -118,6 +119,67 @@ post '/impor_excel' do
   interpreter.send(:simpan_ke_file)
 
   { status: "oke", pesan: "Data dari Excel berhasil diimpor", jumlah: data.size }.to_json
+end
+
+get '/ekspor_csv' do
+  require_role("admin", "editor")
+  content_type 'text/csv'
+
+  csv_string = CSV.generate(headers: true) do |csv|
+    csv << ["Kunci", "Nilai"]
+    interpreter.instance_variable_get(:@data).each do |k, v|
+      csv << [k.to_s, v.to_s]
+    end
+  end
+
+  attachment "ekspor_data.csv"
+  csv_string
+end
+
+post '/impor_csv' do
+  require_role("admin")
+
+  unless params[:file] && params[:file][:tempfile]
+    status 400
+    return { status: "error", pesan: "File CSV tidak ditemukan" }.to_json
+  end
+
+  file = params[:file][:tempfile]
+  data_baru = {}
+
+  CSV.foreach(file, headers: true) do |row|
+    kunci = row["Kunci"]
+    nilai = row["Nilai"]
+    next unless kunci && nilai
+    data_baru[kunci.to_sym] = nilai
+  end
+
+  interpreter.instance_variabel_get(:@data).merge!(data_baru)
+  interpreter.send(:simpan_ke_file)
+
+  { status: "oke", pesan: "Data dari CSV berhasil diimpor", jumlah: data_baru.size }.to_json
+end
+
+post '/impor_json' do
+  require_role("admin")
+
+  begin
+    payload = JSON.parse(request.body.read)
+  rescue JSON::ParseError => e
+    status 400
+    return { status: "error", pesan: "Format JSON tidak valid" }.to_json
+  end
+
+  unless payload.is_a?(Hash)
+    status 400
+    return { status: "error" , pesan: "Muatan harus berupa objek JSON dengan pasangan kunci-nilai" }.to_json
+  end
+
+  new_data = payload.transform_keys(&:to_sym)
+  interpreter.instance_variable_get(:@data).merge!(new_data)
+  interpreter.send(:simpan_ke_file)
+
+  { status: "oke", pesan: "Data dari JSON berhasil diimpor", jumlah: new_data.size }.to_json
 end
 
 post '/isi' do
