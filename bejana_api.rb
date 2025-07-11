@@ -99,11 +99,11 @@ post '/cari' do
   { hasil: hasil }.to_json
 end
 
-post '/cari_tanggal' do
+post '/cari_antara_tanggal' do
   content_type :json
   input = JSON.parse(request.body.read)
   start_date = Date.parse(input["start_date"])
-  end_date = Date.parse(input["end_date'])
+  end_date = Date.parse(input["end_date"])
   hasil = interpreter.cari_antara_tanggal(start_date, end_date)
   { hasil: hasil }.to_json
 end
