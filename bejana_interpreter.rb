@@ -3,6 +3,7 @@
 require 'json'
 require 'logger'
 require 'yaml'
+require 'csv'
 
 require_relative 'modules/navigator_modul'
 require_relative 'modules/crud_modul'
@@ -112,6 +113,45 @@ class BejanaInterpreter
     @logger.info("Data diurutkan berdasarkan #{kunci} #{urutan}")
   end
 
+  def ekspor_data(format = "json", file = "ekspor_data")
+    case format
+    when "json"
+      File.write("#{file}.json", @data.to_json)
+      puts "Data berhasil diekspor ke #{file}.json"
+      @logger.info("Data diekspor ke #{file}.json")
+    when "csv"
+      CSV.open("#{file}.csv", "w") do |csv|
+        csv << ["Kunci", "Nilai"]
+        @data.each { |k, v| csv << [k, v] }
+      end
+      puts "Data berhasil diekspor ke #{file}.csv"
+      @logger.info("Data diekspor ke #{file}.csv")
+    else
+      puts "Format ekspor tidak dikenali: #{format}"
+    end
+  end
+
+  def impor_data(file)
+    ext = File.extname(file)
+    case ext
+    when ".json"
+      json_data = JSON.parse(File.read(file))
+      @data.merge!(json_data.transform_keys(&:to_sym))
+      puts "Data berhasil diimpor dari #{file}"
+      @logger.info("Data diimpor dari file: #{file}")
+    when ".csv"
+      CSV.foreach(file, headers: true) do |row|
+        key = row["Kunci"]
+        value = row["Nilai"]
+        @data[key.to_sym] = value
+      end
+      puts "Data berhasil diimpor dari #{file}"
+      @logger.info("Data diimpor dari file: #{file}")
+    else
+      puts "Format file tidak dikenali untuk impor: #{file}"
+    end
+  end
+
   private
 
   def proses(baris)
@@ -171,6 +211,17 @@ class BejanaInterpreter
       kunci = $1
       urutan = $2 || "asc"
       sortir_data(kunci, urutan)
+    when /^ekspor_data (json|csv)(?: (\S+))?$/
+      format = $1
+      file = $2 || "ekspor_data"
+      ekspor_data(format, file)
+    when /^impor_data (\S+)$/
+      file = $1
+      if File.exist?(file)
+        impor_data(file)
+      else
+        puts "File tidak ditemukan: #{file}"
+      end
     else
       @logger.warn("Perintah tidak dikenali: #{baris}")
       puts "Perintah tidak dikenali: #{baris}"
