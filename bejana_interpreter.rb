@@ -89,6 +89,21 @@ class BejanaInterpreter
     @logger.info("Pencarian pola: #{pola} => #{hasil.inspect}")
   end
 
+  def cari_antara_tanggal(start_date, end_date)
+    hasil = @data.select do |k ,v|
+      if v.is_a?(Date)
+        v >= start_date && v <= end_date
+      else
+        false
+      end
+    end
+
+    puts "Hasil pencarian antara #{start_date} dan #{end_date}:"
+    hasil.each { |k, v| puts "#{k}: #{v}" }
+
+    @logger.info("Pencarian data antara tanggal #{start_date} dan #{end_date}" => #{hasil.inspect}")
+  end 
+
   def sortir_data(kunci, urutan = "asc")
     cocok = @data.sort_by { |k ,v| v.to_s }
     cocok = urutan == "desc" ? cocok.reverse : cocok
@@ -147,6 +162,11 @@ class BejanaInterpreter
     when /^cari "(.*?)"$/
       pola = $1
       cari_data_pola(pola)
+    when /^cari_antara_tangggal (\d{4}-\d{2}-\d{2})\s+(\d{4}-\d{2}-\d{2})$/
+      start_date = Date.parse($1)
+      end_date = Date.parse($2)
+
+      cari_antara_tanggal(start_date, end_date)
     when /^sortir_data (\w+)(?: (asc|desc))?$/
       kunci = $1
       urutan = $2 || "asc"
