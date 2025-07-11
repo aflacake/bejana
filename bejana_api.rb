@@ -2,6 +2,8 @@
 
 require 'sinatra'
 require 'json'
+require 'axlsx'
+require 'roo'
 
 require_relative 'bejana_interpreter'
 require_relative 'manajer_pengguna'
@@ -71,6 +73,51 @@ end
 get '/data' do
   content_type :json
   interpreter.instance_variable_get(:@data).to_json
+end
+
+get '/ekspor_excel' do
+  require_role("admin", "editor")
+  content_type 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+  file = "ekspor_data_api.xlsx"
+
+  package = Axlsx::Package.new
+  workbook = package.workbook
+
+  workbook.add_worksheet(name: "Data") do |sheet|
+    sheet.add_row ["Kunci", "Nilai"]
+    interpreter.instance_variable_get(:@data).each do |k, v|
+      sheet.add_row [k.to_s, v.to_s]
+    end
+  end
+
+  package.serialize(file)
+  send_file file, filename: file
+end
+
+post '/impor_excel' do
+  require_role("admin")
+
+  unless params[:file] && params[:file][:tempfile]
+    status 400
+    return { status: "error", pesan: "File tidak ditemukan dalam permintaan" }.to_json
+  end
+
+  file = params[:file][:tempfile]
+  xlsx = Roo::Spreadsheet.open(file)
+  sheet = xlsx.sheet(0)
+
+  data = {}
+  sheet.each_with_index do |row, i|
+    next if i == 0
+    kunci, nilai = row
+    data[kunci.to_sym] = nilai
+  end
+
+  interpreter.instance_variable_set(:@data, interpreter.instance_variable_get(:@data).merge(data))
+  interpreter.send(:simpan_ke_file)
+
+  { status: "oke", pesan: "Data dari Excel berhasil diimpor", jumlah: data.size }.to_json
 end
 
 post '/isi' do
